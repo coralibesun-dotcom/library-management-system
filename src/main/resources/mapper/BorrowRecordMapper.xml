@@ -24,6 +24,15 @@
 
     </insert>
 
+    <!-- 根据借阅记录id查询 -->
+    <select id="findById" resultType="BorrowRecord">
+
+        SELECT *
+        FROM borrow_record
+        WHERE id = #{id}
+
+    </select>
+
     <!-- 查询用户当前借了多少本书 -->
     <select id="countBorrowingByUserId" resultType="int">
 

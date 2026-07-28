@@ -13,6 +13,10 @@ public interface BorrowRecordMapper {
     int insert(BorrowRecord record);
 
 
+    // 根据借阅记录id查询
+    BorrowRecord findById(Long id);
+
+
     // 查询用户当前借阅数量
     int countBorrowingByUserId(Long userId);
 

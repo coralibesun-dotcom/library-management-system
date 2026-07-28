@@ -2,13 +2,19 @@ package com.coraline.library.entity;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class OperationLog {
 
-  private long id;
-  private long userId;
+  private Long id;
+
+  private Long userId;
+
   private String operation;
+
   private String target;
-  private java.sql.Timestamp createTime;
+
+  private LocalDateTime createTime;
 
 }

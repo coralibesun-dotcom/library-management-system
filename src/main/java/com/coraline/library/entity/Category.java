@@ -2,12 +2,17 @@ package com.coraline.library.entity;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class Category {
 
-  private long id;
+  private Long id;
+
   private String name;
-  private java.sql.Timestamp createTime;
-  private java.sql.Timestamp updateTime;
+
+  private LocalDateTime createTime;
+
+  private LocalDateTime updateTime;
 
 }

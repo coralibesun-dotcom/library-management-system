@@ -2,15 +2,17 @@ package com.coraline.library.entity;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class User {
 
-  private long id;
+  private Long id;
   private String username;
   private String password;
   private String role;
   private long status;
-  private java.sql.Timestamp createTime;
-  private java.sql.Timestamp updateTime;
+  private LocalDateTime createTime;
+  private LocalDateTime updateTime;
 
 }

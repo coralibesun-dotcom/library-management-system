@@ -29,12 +29,40 @@
     </insert>
 
 
-    <!-- 分页查询日志 -->
+    <!-- 不同条件查询日志(包含分页) -->
     <select id="findPage" resultType="OperationLog">
 
         SELECT *
         FROM operation_log
+
+        <where>
+
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+
+
+            <if test="operation != null and operation != ''">
+                AND operation = #{operation}
+            </if>
+
+
+            <if test="startTime != null">
+                AND create_time <![CDATA[ >= ]]> #{startTime}
+            </if>
+
+
+            <if test="endTime != null">
+                AND create_time <![CDATA[ <= ]]> #{endTime}
+            </if>
+
+
+        </where>
+
+
         ORDER BY create_time DESC
+
+
         LIMIT #{offset}, #{pageSize}
 
     </select>
@@ -46,38 +74,29 @@
         SELECT COUNT(*)
         FROM operation_log
 
-    </select>
+        <where>
+
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
 
 
-    <!-- 根据用户查询日志 -->
-    <select id="findByUserId" resultType="OperationLog">
-
-        SELECT *
-        FROM operation_log
-        WHERE user_id = #{userId}
-        ORDER BY create_time DESC
-
-    </select>
+            <if test="operation != null and operation != ''">
+                AND operation = #{operation}
+            </if>
 
 
-    <!-- 根据操作类型查询 -->
-    <select id="findByOperation" resultType="OperationLog">
-
-        SELECT *
-        FROM operation_log
-        WHERE operation = #{operation}
-        ORDER BY create_time DESC
-
-    </select>
+            <if test="startTime != null">
+                AND create_time <![CDATA[ >= ]]> #{startTime}
+            </if>
 
 
-    <!-- 根据时间范围查询 -->
-    <select id="findByTimeRange" resultType="OperationLog">
+            <if test="endTime != null">
+                AND create_time <![CDATA[ <= ]]> #{endTime}
+            </if>
 
-        SELECT *
-        FROM operation_log
-        WHERE create_time BETWEEN #{startTime} AND #{endTime}
-        ORDER BY create_time DESC
+
+        </where>
 
     </select>
 

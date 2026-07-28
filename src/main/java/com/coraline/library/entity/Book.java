@@ -2,21 +2,31 @@ package com.coraline.library.entity;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class Book {
 
-  private long id;
+  private Long id;
+
   private String name;
+
   private String author;
+
   private String isbn;
-  private long categoryId;
+
+  private Long categoryId;
+
   private String publisher;
-  private long stock;
+
+  private Long stock;
+
   private String description;
-  private long status;
-  private java.sql.Timestamp createTime;
-  private java.sql.Timestamp updateTime;
 
+  private Integer status;
 
+  private LocalDateTime createTime;
+
+  private LocalDateTime updateTime;
 
 }
