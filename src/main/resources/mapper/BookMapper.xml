@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.coraline.library.mapper.BookMapper">
+
+
+    <!-- 分页查询全部图书 -->
+    <select id="findPage" resultType="Book">
+
+        SELECT *
+        FROM book
+        LIMIT #{start}, #{pageSize}
+
+    </select>
+
+
+    <!-- 根据关键词搜索 -->
+    <select id="search" resultType="Book">
+
+        SELECT *
+        FROM book
+        WHERE title LIKE CONCAT('%', #{keyword}, '%')
+        OR author LIKE CONCAT('%', #{keyword}, '%')
+        OR publisher LIKE CONCAT('%', #{keyword}, '%')
+        OR isbn LIKE CONCAT('%', #{keyword}, '%')
+
+    </select>
+
+
+    <!-- 分类筛选 -->
+    <select id="findByCategoryId" resultType="Book">
+
+        SELECT *
+        FROM book
+        WHERE category_id = #{categoryId}
+
+    </select>
+
+
+    <!-- 查看详情 -->
+    <select id="findById" resultType="Book">
+
+        SELECT *
+        FROM book
+        WHERE id = #{id}
+
+    </select>
+
+
+    <!-- 新增图书 -->
+    <insert id="insert">
+
+        INSERT INTO book
+        (
+        category_id,
+        title,
+        author,
+        publisher,
+        isbn,
+        description,
+        stock,
+        status
+        )
+        VALUES
+        (
+        #{categoryId},
+        #{title},
+        #{author},
+        #{publisher},
+        #{isbn},
+        #{description},
+        #{stock},
+        #{status}
+        )
+
+    </insert>
+
+
+    <!-- 修改图书 -->
+    <update id="update">
+
+        UPDATE book
+        SET
+        category_id = #{categoryId},
+        title = #{title},
+        author = #{author},
+        publisher = #{publisher},
+        isbn = #{isbn},
+        description = #{description},
+        stock = #{stock}
+        WHERE id = #{id}
+
+    </update>
+
+
+    <!-- 单个下架 -->
+    <update id="updateStatus">
+
+        UPDATE book
+        SET status = #{status}
+        WHERE id = #{id}
+
+    </update>
+
+
+    <!-- 批量修改状态(包含下架) -->
+    <update id="batchUpdateStatus">
+
+        UPDATE book
+        SET status = #{status}
+        WHERE id IN
+        <foreach collection="ids"
+                 item="id"
+                 open="("
+                 separator=","
+                 close=")">
+
+            #{id}
+
+        </foreach>
+
+    </update>
+
+
+    <!-- 借书库存减少 -->
+    <update id="decreaseStock">
+
+        UPDATE book
+        SET stock = stock - 1
+        WHERE id = #{id}
+        AND stock > 0
+
+    </update>
+
+
+    <!-- 还书库存增加 -->
+    <update id="increaseStock">
+
+        UPDATE book
+        SET stock = stock + 1
+        WHERE id = #{id}
+
+    </update>
+
+
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.coraline.library.mapper.OperationLogMapper">
+
+
+    <!-- 新增操作日志 -->
+    <insert id="insert">
+
+        INSERT INTO operation_log
+        (
+        user_id,
+        operation,
+        method,
+        target,
+        create_time
+        )
+        VALUES
+        (
+        #{userId},
+        #{operation},
+        #{method},
+        #{target},
+        NOW()
+        )
+
+    </insert>
+
+
+    <!-- 分页查询日志 -->
+    <select id="findPage" resultType="OperationLog">
+
+        SELECT *
+        FROM operation_log
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{pageSize}
+
+    </select>
+
+
+    <!-- 查询日志总数量 -->
+    <select id="count" resultType="int">
+
+        SELECT COUNT(*)
+        FROM operation_log
+
+    </select>
+
+
+    <!-- 根据用户查询日志 -->
+    <select id="findByUserId" resultType="OperationLog">
+
+        SELECT *
+        FROM operation_log
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+
+    </select>
+
+
+    <!-- 根据操作类型查询 -->
+    <select id="findByOperation" resultType="OperationLog">
+
+        SELECT *
+        FROM operation_log
+        WHERE operation = #{operation}
+        ORDER BY create_time DESC
+
+    </select>
+
+
+    <!-- 根据时间范围查询 -->
+    <select id="findByTimeRange" resultType="OperationLog">
+
+        SELECT *
+        FROM operation_log
+        WHERE create_time BETWEEN #{startTime} AND #{endTime}
+        ORDER BY create_time DESC
+
+    </select>
+
+
+</mapper>
