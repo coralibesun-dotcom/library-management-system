@@ -3,8 +3,11 @@ package com.coraline.library.service.impl;
 import com.coraline.library.common.annotation.Log;
 import com.coraline.library.common.enums.BookStatusEnum;
 import com.coraline.library.common.enums.BorrowStatusEnum;
+import com.coraline.library.common.enums.ResultCodeEnum;
+import com.coraline.library.dto.BorrowDTO;
 import com.coraline.library.entity.Book;
 import com.coraline.library.entity.BorrowRecord;
+import com.coraline.library.exception.BusinessException;
 import com.coraline.library.mapper.BookMapper;
 import com.coraline.library.mapper.BorrowRecordMapper;
 import com.coraline.library.service.BorrowRecordService;
@@ -29,34 +32,45 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
     @Log("借阅图书")
     @Override
     @Transactional
-    public void borrowBook(Long userId, Long bookId) {
+    public void borrowBook(BorrowDTO borrowDTO) {
 
 
         // 1. 查询图书是否存在
-        Book book = bookMapper.findById(bookId);
+        Book book = bookMapper.findById(borrowDTO.getBookId());
 
 
         if(book == null){
-            throw new RuntimeException("图书不存在");
+
+            throw new BusinessException(
+                    ResultCodeEnum.BOOK_NOT_FOUND,
+                    "图书不存在"
+            );
+
         }
 
 
         // 2. 判断用户是否已经借过该书
-        if(hasBorrowed(userId, bookId)){
+        if(hasBorrowed(borrowDTO.getUserId(), borrowDTO.getBookId())){
 
-            throw new RuntimeException("该图书已经借阅，不能重复借阅");
+            throw new BusinessException(
+                    ResultCodeEnum.BORROW_ALREADY,
+                    "该图书已经借阅，不能重复借阅"
+            );
 
         }
 
 
         // 3. 判断用户当前借阅数量
         int count =
-                borrowRecordMapper.countBorrowingByUserId(userId);
+                borrowRecordMapper.countBorrowingByUserId(borrowDTO.getUserId());
 
 
         if(count >= 5){
 
-            throw new RuntimeException("最多借5本书");
+            throw new BusinessException(
+                    ResultCodeEnum.BORROW_LIMIT,
+                    "最多借5本书"
+            );
 
         }
 
@@ -65,7 +79,10 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
         if(!BookStatusEnum.ON_SALE.getCode()
                 .equals(book.getStatus())){
 
-            throw new RuntimeException("该图书不可借阅");
+            throw new BusinessException(
+                    ResultCodeEnum.BOOK_STATUS_ERROR,
+                    "该图书不可借阅"
+            );
 
         }
 
@@ -73,7 +90,10 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
         // 5. 判断库存
         if(book.getStock() <= 0){
 
-            throw new RuntimeException("库存不足");
+            throw new BusinessException(
+                    ResultCodeEnum.STOCK_NOT_ENOUGH,
+                    "库存不足"
+            );
 
         }
 
@@ -81,8 +101,8 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
         // 6. 新增借阅记录
         BorrowRecord record = new BorrowRecord();
 
-        record.setUserId(userId);
-        record.setBookId(bookId);
+        record.setUserId(borrowDTO.getUserId());
+        record.setBookId(borrowDTO.getBookId());
         record.setStatus(
                 BorrowStatusEnum.BORROWING.getCode()
         );
@@ -92,7 +112,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
 
 
         // 7. 减少库存
-        bookMapper.decreaseStock(bookId);
+        bookMapper.decreaseStock(borrowDTO.getBookId());
 
     }
     @Override
@@ -124,7 +144,10 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
 
         if(record == null){
 
-            throw new RuntimeException("借阅记录不存在");
+            throw new BusinessException(
+                    ResultCodeEnum.BORROW_RECORD_NOT_FOUND,
+                    "借阅记录不存在"
+            );
 
         }
 
@@ -133,7 +156,10 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
         if(BorrowStatusEnum.RETURNED.getCode()
                 .equals(record.getStatus())){
 
-            throw new RuntimeException("该图书已经归还");
+            throw new BusinessException(
+                    ResultCodeEnum.BOOK_RETURNED,
+                    "该图书已经归还"
+            );
 
         }
 

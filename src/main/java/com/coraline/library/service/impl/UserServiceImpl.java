@@ -1,7 +1,10 @@
 package com.coraline.library.service.impl;
 
 
+import com.coraline.library.common.enums.ResultCodeEnum;
+import com.coraline.library.dto.UserLoginDTO;
 import com.coraline.library.entity.User;
+import com.coraline.library.exception.BusinessException;
 import com.coraline.library.mapper.UserMapper;
 import com.coraline.library.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,35 +36,42 @@ public class UserServiceImpl implements UserService {
      * 登录
      */
     @Override
-    public User login(String username, String password) {
+    public User login(UserLoginDTO dto) {
 
 
-        // 1. 根据用户名查询用户
-        User user = userMapper.findByUsername(username);
+        User user =
+                userMapper.findByUsername(
+                        dto.getUsername()
+                );
 
 
         if(user == null){
 
-            throw new RuntimeException("用户不存在");
+            throw new BusinessException(
+                    ResultCodeEnum.USER_NOT_FOUND,
+                    "用户不存在"
+            );
 
         }
 
 
-        // 2. 校验密码
-        boolean result = passwordEncoder.matches(
-                password,
-                user.getPassword()
-        );
+        boolean result =
+                passwordEncoder.matches(
+                        dto.getPassword(),
+                        user.getPassword()
+                );
 
 
         if(!result){
 
-            throw new RuntimeException("密码错误");
+            throw new BusinessException(
+                    ResultCodeEnum.PASSWORD_ERROR,
+                    "密码错误"
+            );
 
         }
 
 
-        // 3. 返回用户信息
         return user;
 
     }
@@ -80,7 +90,10 @@ public class UserServiceImpl implements UserService {
 
         if(user == null){
 
-            throw new RuntimeException("用户不存在");
+            throw new BusinessException(
+                    ResultCodeEnum.USER_NOT_FOUND,
+                    "用户不存在"
+            );
 
         }
 

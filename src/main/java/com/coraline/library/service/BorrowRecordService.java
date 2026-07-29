@@ -1,5 +1,6 @@
 package com.coraline.library.service;
 
+import com.coraline.library.dto.BorrowDTO;
 import com.coraline.library.entity.BorrowRecord;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface BorrowRecordService {
     /**
      * 借阅图书
      */
-    void borrowBook(Long userId, Long bookId);
+    void borrowBook(BorrowDTO borrowDTO);
 
 
     /**

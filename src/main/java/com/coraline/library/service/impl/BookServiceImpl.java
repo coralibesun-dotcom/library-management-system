@@ -3,8 +3,10 @@ package com.coraline.library.service.impl;
 import com.coraline.library.common.PageResult;
 import com.coraline.library.common.annotation.Log;
 import com.coraline.library.common.enums.BookStatusEnum;
+import com.coraline.library.common.enums.ResultCodeEnum;
 import com.coraline.library.dto.BookQueryDTO;
 import com.coraline.library.entity.Book;
+import com.coraline.library.exception.BusinessException;
 import com.coraline.library.mapper.BookMapper;
 import com.coraline.library.service.BookService;
 import org.springframework.stereotype.Service;
@@ -80,12 +82,15 @@ public class BookServiceImpl implements BookService {
         bookMapper.update(book);
     }
 
-    @Log("下架图书")
+    @Log("修改图书状态")
     @Override
     public void updateStatus(Long id, Integer status) {
 
         if(status == null){
-            throw new RuntimeException("状态不能为空");
+            throw new BusinessException(
+                    ResultCodeEnum.PARAM_ERROR,
+                    "状态不能为空"
+            );
         }
 
         boolean valid =
@@ -95,7 +100,10 @@ public class BookServiceImpl implements BookService {
 
 
         if(!valid){
-            throw new RuntimeException("图书状态错误");
+            throw new BusinessException(
+                    ResultCodeEnum.BOOK_STATUS_ERROR,
+                    "图书状态错误"
+            );
         }
 
 

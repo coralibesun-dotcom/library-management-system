@@ -1,7 +1,9 @@
 package com.coraline.library.service.impl;
 
 
+import com.coraline.library.common.enums.ResultCodeEnum;
 import com.coraline.library.entity.Category;
+import com.coraline.library.exception.BusinessException;
 import com.coraline.library.mapper.CategoryMapper;
 import com.coraline.library.service.CategoryService;
 import org.springframework.stereotype.Service;
@@ -49,7 +51,10 @@ public class CategoryServiceImpl implements CategoryService {
 
         if(category == null){
 
-            throw new RuntimeException("分类不存在");
+            throw new BusinessException(
+                    ResultCodeEnum.CATEGORY_NOT_FOUND,
+                    "分类不存在"
+            );
 
         }
 

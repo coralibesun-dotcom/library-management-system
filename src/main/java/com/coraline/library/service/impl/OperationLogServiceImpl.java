@@ -1,8 +1,10 @@
 package com.coraline.library.service.impl;
 
 
+import com.coraline.library.common.enums.ResultCodeEnum;
 import com.coraline.library.dto.OperationLogQueryDTO;
 import com.coraline.library.entity.OperationLog;
+import com.coraline.library.exception.BusinessException;
 import com.coraline.library.mapper.OperationLogMapper;
 import com.coraline.library.service.OperationLogService;
 import org.springframework.stereotype.Service;
@@ -39,7 +41,10 @@ public class OperationLogServiceImpl implements OperationLogService {
 
         if(result == 0){
 
-            throw new RuntimeException("日志保存失败");
+            throw new BusinessException(
+                    ResultCodeEnum.SYSTEM_ERROR,
+                    "日志保存失败"
+            );
 
         }
 
