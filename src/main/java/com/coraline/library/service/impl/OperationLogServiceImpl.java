@@ -1,6 +1,7 @@
 package com.coraline.library.service.impl;
 
 
+import com.coraline.library.common.PageResult;
 import com.coraline.library.common.enums.ResultCodeEnum;
 import com.coraline.library.dto.OperationLogQueryDTO;
 import com.coraline.library.entity.OperationLog;
@@ -52,29 +53,45 @@ public class OperationLogServiceImpl implements OperationLogService {
 
 
 
-    /**
-     * 分页查询日志
-     */
     @Override
-    public List<OperationLog> findPage(
+    public PageResult<OperationLog> findPage(
             OperationLogQueryDTO query
     ){
 
-        return operationLogMapper.findPage(query);
 
-    }
+        if(query.getPageNum() == null){
+            query.setPageNum(1);
+        }
+
+
+        if(query.getPageSize() == null){
+            query.setPageSize(10);
+        }
+
+
+        Integer offset =
+                (query.getPageNum()-1)
+                        * query.getPageSize();
 
 
 
-    /**
-     * 查询日志数量
-     */
-    @Override
-    public int count(
-            OperationLogQueryDTO query
-    ){
+        List<OperationLog> records =
+                operationLogMapper.findPage(
+                        query,
+                        offset,
+                        query.getPageSize()
+                );
 
-        return operationLogMapper.count(query);
+
+        int total =
+                operationLogMapper.count(query);
+
+
+
+        return new PageResult<>(
+                records,
+                (long) total
+        );
 
     }
 

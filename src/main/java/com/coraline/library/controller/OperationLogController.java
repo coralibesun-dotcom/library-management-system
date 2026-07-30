@@ -1,6 +1,7 @@
 package com.coraline.library.controller;
 
 
+import com.coraline.library.common.PageResult;
 import com.coraline.library.common.Result;
 import com.coraline.library.dto.OperationLogQueryDTO;
 import com.coraline.library.entity.OperationLog;
@@ -9,11 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 
 @RestController
-@RequestMapping("/opLog")
+@RequestMapping("/Log")
 public class OperationLogController {
 
 
@@ -31,7 +30,7 @@ public class OperationLogController {
      * 分页查询操作日志
      */
     @GetMapping("/page")
-    public Result<List<OperationLog>> findPage(
+    public Result<PageResult<OperationLog>> findPage(
             OperationLogQueryDTO query
     ){
 

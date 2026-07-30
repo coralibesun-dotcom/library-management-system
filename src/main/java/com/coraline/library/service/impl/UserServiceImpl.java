@@ -7,6 +7,7 @@ import com.coraline.library.entity.User;
 import com.coraline.library.exception.BusinessException;
 import com.coraline.library.mapper.UserMapper;
 import com.coraline.library.service.UserService;
+import com.coraline.library.vo.LoginVO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
      * 登录
      */
     @Override
-    public User login(UserLoginDTO dto) {
+    public LoginVO login(UserLoginDTO dto) {
 
 
         User user =
@@ -72,7 +73,7 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        return user;
+        return convertToVO(user);
 
     }
 
@@ -82,7 +83,7 @@ public class UserServiceImpl implements UserService {
      * 根据id查询用户
      */
     @Override
-    public User findById(Long id) {
+    public LoginVO findById(Long id) {
 
 
         User user = userMapper.findById(id);
@@ -98,9 +99,37 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        return user;
+        return convertToVO(user);
 
     }
+
+    /**
+     * Entity转换VO
+     */
+    private LoginVO convertToVO(User user){
+
+
+        LoginVO vo = new LoginVO();
+
+
+        vo.setId(user.getId());
+
+
+        vo.setUsername(
+                user.getUsername()
+        );
+
+
+        vo.setRole(
+                user.getRole()
+        );
+
+
+
+        return vo;
+
+    }
+
 
 
 }

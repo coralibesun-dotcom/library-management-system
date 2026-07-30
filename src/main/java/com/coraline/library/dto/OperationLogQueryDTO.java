@@ -10,27 +10,44 @@ import java.time.LocalDateTime;
 public class OperationLogQueryDTO {
 
 
-    // 根据用户查询
+    /**
+     * 当前页
+     */
+    private Integer pageNum;
+
+
+    /**
+     * 每页数量
+     */
+    private Integer pageSize;
+
+
+
+    /**
+     * 用户id
+     */
     private Long userId;
 
 
-    // 根据操作类型查询
+
+    /**
+     * 操作类型
+     */
     private String operation;
 
 
-    // 开始时间
+
+    /**
+     * 开始时间
+     */
     private LocalDateTime startTime;
 
 
-    // 结束时间
+
+    /**
+     * 结束时间
+     */
     private LocalDateTime endTime;
 
-
-    // 分页开始位置
-    private Integer offset;
-
-
-    // 每页数量
-    private Integer pageSize;
 
 }

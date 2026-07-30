@@ -5,6 +5,7 @@ import com.coraline.library.common.Result;
 import com.coraline.library.dto.UserLoginDTO;
 import com.coraline.library.entity.User;
 import com.coraline.library.service.UserService;
+import com.coraline.library.vo.LoginVO;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -28,7 +29,7 @@ public class UserController {
      * 用户登录
      */
     @PostMapping("/login")
-    public Result<User> login(
+    public Result<LoginVO> login(
             @RequestBody UserLoginDTO dto
     ){
 
