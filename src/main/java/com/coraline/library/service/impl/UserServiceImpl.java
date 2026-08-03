@@ -7,6 +7,7 @@ import com.coraline.library.entity.User;
 import com.coraline.library.exception.BusinessException;
 import com.coraline.library.mapper.UserMapper;
 import com.coraline.library.service.UserService;
+import com.coraline.library.utils.JwtUtil;
 import com.coraline.library.vo.LoginVO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,14 +21,18 @@ public class UserServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
+    private final JwtUtil jwtUtil;
+
 
     public UserServiceImpl(
             UserMapper userMapper,
-            BCryptPasswordEncoder passwordEncoder
+            BCryptPasswordEncoder passwordEncoder,
+            JwtUtil jwtUtil
     ) {
 
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
 
     }
 
@@ -73,7 +78,18 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        return convertToVO(user);
+        LoginVO vo = convertToVO(user);
+
+        String token =
+                jwtUtil.createToken(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getRole()
+                );
+
+        vo.setToken(token);
+
+        return vo;
 
     }
 

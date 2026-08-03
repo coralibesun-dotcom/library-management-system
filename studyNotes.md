@@ -43,3 +43,32 @@ null
 没有返回对象。
 
 一般用于单个查询
+
+## 3.LoginInterceptor,UserContext,JwUtil
+#### (1)
+用户请求接口
+↓
+前端把 token 放入请求头(Header)
+↓
+LoginInterceptor 拦截请求
+↓
+JwtUtil 解析并验证 token
+↓
+得到 userId、role 等信息
+↓
+UserContext 使用 ThreadLocal 保存当前请求用户信息
+↓
+放行进入 Controller
+↓
+Service 可以通过 UserContext 获取当前用户
+↓
+请求结束
+↓
+UserContext.clear() 清除当前线程数据
+#### (2)
+完整职责区分：
+组件	                职责
+JwtUtil	            处理 JWT 格式：生成 token、解析 token
+LoginInterceptor	处理 HTTP 请求流程：拿 token、调用 JwtUtil、初始化用户身份
+UserContext	        保存当前请求用户信息
+权限控制	            判断这个用户能不能执行某操作

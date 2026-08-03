@@ -3,7 +3,6 @@ package com.coraline.library.controller;
 
 import com.coraline.library.common.Result;
 import com.coraline.library.dto.UserLoginDTO;
-import com.coraline.library.entity.User;
 import com.coraline.library.service.UserService;
 import com.coraline.library.vo.LoginVO;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +43,7 @@ public class UserController {
      * 根据id查询用户
      */
     @GetMapping("/{id}")
-    public Result<User> findById(
+    public Result<LoginVO> findById(
             @PathVariable("id") Long id
     ){
 

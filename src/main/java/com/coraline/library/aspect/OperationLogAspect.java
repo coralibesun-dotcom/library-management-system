@@ -2,6 +2,7 @@ package com.coraline.library.aspect;
 
 
 import com.coraline.library.common.annotation.Log;
+import com.coraline.library.common.context.UserContext;
 import com.coraline.library.entity.OperationLog;
 import com.coraline.library.service.OperationLogService;
 import org.aspectj.lang.JoinPoint;
@@ -58,7 +59,7 @@ public class OperationLogAspect {
         );
 
 
-        operationLog.setUserId(1L);
+        operationLog.setUserId(UserContext.getUserId());
 
 
         operationLogService.record(operationLog);

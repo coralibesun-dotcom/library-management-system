@@ -13,3 +13,8 @@ mybatis:
 
 server:
   port: 8080
+
+
+jwt:
+  secret: coraline-library-management-system-secret-key-2026
+  expire: 86400000

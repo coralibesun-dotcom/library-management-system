@@ -26,6 +26,9 @@ public enum ResultCodeEnum {
     PASSWORD_ERROR(1002, "密码错误"),
 
 
+    //JWT相关错误：token过期,token被篡改,token格式错误
+    TOKEN_INVALID(1003, "token无效"),
+
 
     // 图书相关 2000
     BOOK_NOT_FOUND(2001, "图书不存在"),
