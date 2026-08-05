@@ -72,3 +72,48 @@ JwtUtil	            处理 JWT 格式：生成 token、解析 token
 LoginInterceptor	处理 HTTP 请求流程：拿 token、调用 JwtUtil、初始化用户身份
 UserContext	        保存当前请求用户信息
 权限控制	            判断这个用户能不能执行某操作
+
+
+
+
+## 4.传值
+### (1)url路径传值
+GET /borrow/user/5
+
+这个 5 来源：
+
+浏览器/前端
+↓
+HTTP请求URL
+↓
+Spring解析@PathVariable
+↓
+userId=5
+↓
+Service
+
+### (2)UserContext传值
+UserContext 也不是凭空产生的。
+
+它的来源链：
+
+用户登录
+↓
+JWT生成
+↓
+token保存userId
+↓
+请求携带token
+↓
+Interceptor解析
+↓
+UserContext保存
+
+
+所以核心区别：
+
+### (3)路径传id	UserContext
+来源	                      用户请求参数  	登录身份
+是否用户可修改	          可以	        不能直接改
+可信程度	                  低	         高
+用途	查询别人资料（管理员）	  查询自己的资料

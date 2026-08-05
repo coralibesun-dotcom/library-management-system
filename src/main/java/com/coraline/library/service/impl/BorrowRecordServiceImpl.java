@@ -1,6 +1,7 @@
 package com.coraline.library.service.impl;
 
 import com.coraline.library.common.annotation.Log;
+import com.coraline.library.common.context.UserContext;
 import com.coraline.library.common.enums.BookStatusEnum;
 import com.coraline.library.common.enums.BorrowStatusEnum;
 import com.coraline.library.common.enums.ResultCodeEnum;
@@ -128,10 +129,23 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
     }
 
     @Override
-    public List<BorrowRecord> findByUserId(Long userId) {
+    public List<BorrowRecord> findMyBorrow() {
+
+
+        Long userId =
+                UserContext.getUserId();
+
+
         return borrowRecordMapper.findByUserId(userId);
+
     }
 
+    @Override
+    public List<BorrowRecord> findAll() {
+
+        return borrowRecordMapper.findAll();
+
+    }
     @Log("归还图书")
     @Override
     @Transactional

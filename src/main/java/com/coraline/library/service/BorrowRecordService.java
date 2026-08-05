@@ -27,9 +27,15 @@ public interface BorrowRecordService {
 
 
     /**
-     * 查询用户借阅记录
+     * 查询我的借阅记录
      */
-    List<BorrowRecord> findByUserId(Long userId);
+    List<BorrowRecord> findMyBorrow();
+
+
+    /**
+     * 查询全部借阅记录（管理员）
+     */
+    List<BorrowRecord> findAll();
 
 
     /**

@@ -3,6 +3,7 @@ package com.coraline.library.controller;
 
 import com.coraline.library.common.PageResult;
 import com.coraline.library.common.Result;
+import com.coraline.library.common.annotation.RequireRole;
 import com.coraline.library.dto.BookQueryDTO;
 import com.coraline.library.entity.Book;
 import com.coraline.library.service.BookService;
@@ -60,6 +61,7 @@ public class BookController {
     /**
      * 新增图书
      */
+    @RequireRole("ADMIN")
     @PostMapping
     public Result<Void> addBook(
             @RequestBody Book book
@@ -76,6 +78,7 @@ public class BookController {
     /**
      * 修改图书
      */
+    @RequireRole("ADMIN")
     @PutMapping
     public Result<Void> updateBook(
             @RequestBody Book book
@@ -92,6 +95,7 @@ public class BookController {
     /**
      * 修改图书状态
      */
+    @RequireRole("ADMIN")
     @PutMapping("/status")
     public Result<Void> updateStatus(
             @RequestParam Long id,

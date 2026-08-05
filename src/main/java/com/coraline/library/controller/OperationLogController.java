@@ -3,6 +3,7 @@ package com.coraline.library.controller;
 
 import com.coraline.library.common.PageResult;
 import com.coraline.library.common.Result;
+import com.coraline.library.common.annotation.RequireRole;
 import com.coraline.library.dto.OperationLogQueryDTO;
 import com.coraline.library.entity.OperationLog;
 import com.coraline.library.service.OperationLogService;
@@ -29,6 +30,7 @@ public class OperationLogController {
     /**
      * 分页查询操作日志
      */
+    @RequireRole("ADMIN")
     @GetMapping("/page")
     public Result<PageResult<OperationLog>> findPage(
             OperationLogQueryDTO query

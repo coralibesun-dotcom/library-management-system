@@ -25,9 +25,12 @@ public interface BorrowRecordMapper {
     int countUserBook(Long userId, Long bookId);
 
 
-    // 查询用户借阅记录
+    // 查询我的借阅记录
     List<BorrowRecord> findByUserId(Long userId);
 
+
+    //查询全部借阅记录
+    List<BorrowRecord> findAll();
 
     // 归还图书
     int returnBook(Long id);
