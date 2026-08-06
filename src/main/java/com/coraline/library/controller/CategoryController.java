@@ -1,12 +1,10 @@
 package com.coraline.library.controller;
 
 import com.coraline.library.common.Result;
+import com.coraline.library.common.annotation.RequireRole;
 import com.coraline.library.entity.Category;
 import com.coraline.library.service.CategoryService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +29,54 @@ public class CategoryController {
         return Result.success(
                 categoryService.findById(id)
         );
+    }
+
+    /**
+     * 新增分类
+     */
+    @RequireRole("ADMIN")
+    @PostMapping
+    public Result<Void> add(
+            @RequestBody Category category
+    ){
+
+        categoryService.add(category);
+
+        return Result.success();
+
+    }
+
+
+
+    /**
+     * 修改分类
+     */
+    @RequireRole("ADMIN")
+    @PutMapping
+    public Result<Void> update(
+            @RequestBody Category category
+    ){
+
+        categoryService.update(category);
+
+        return Result.success();
+
+    }
+
+
+
+    /**
+     * 删除分类
+     */
+    @RequireRole("ADMIN")
+    @DeleteMapping("/{id}")
+    public Result<Void> delete(
+            @PathVariable Long id
+    ){
+
+        categoryService.delete(id);
+
+        return Result.success();
+
     }
 }

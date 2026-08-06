@@ -14,4 +14,12 @@ public interface CategoryMapper {
     // 根据id查询分类
     Category findById(Long id);
 
+    void insert(Category category);
+
+
+    void update(Category category);
+
+
+    void delete(Long id);
+
 }
