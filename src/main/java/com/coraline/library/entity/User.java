@@ -11,7 +11,7 @@ public class User {
   private String username;
   private String password;
   private String role;
-  private long status;
+  private Integer status;
   private LocalDateTime createTime;
   private LocalDateTime updateTime;
 

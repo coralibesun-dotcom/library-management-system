@@ -26,6 +26,6 @@ public interface OperationLogMapper {
 
 
     // 查询日志数量
-    int count(OperationLogQueryDTO query);
+    int count(@Param("query") OperationLogQueryDTO query);
 
 }

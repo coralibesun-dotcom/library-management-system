@@ -19,7 +19,7 @@
         #{userId},
         #{bookId},
         NOW(),
-        1
+        #{status}
         )
 
     </insert>
@@ -30,7 +30,7 @@
         SELECT COUNT(*)
         FROM borrow_record
         WHERE user_id = #{userId}
-        AND status = 1
+        AND status = 0
 
     </select>
 
@@ -41,7 +41,7 @@
         FROM borrow_record
         WHERE user_id = #{userId}
         AND book_id = #{bookId}
-        AND status = 1
+        AND status = 0
 
     </select>
 
@@ -51,6 +51,17 @@
         SELECT *
         FROM borrow_record
         WHERE id = #{id}
+
+    </select>
+
+
+    <!--查询我的借阅记录-->
+    <select id="findByUserId" resultType="BorrowRecord">
+
+        SELECT *
+        FROM borrow_record
+        WHERE user_id = #{userId}
+        ORDER BY borrow_time DESC
 
     </select>
 
@@ -71,7 +82,7 @@
 
         UPDATE borrow_record
         SET
-        status = 0,
+        status = 1,
         return_time = NOW()
         WHERE id = #{id}
 

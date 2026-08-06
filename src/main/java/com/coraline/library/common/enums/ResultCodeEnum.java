@@ -24,10 +24,11 @@ public enum ResultCodeEnum {
     // 用户相关 1000
     USER_NOT_FOUND(1001, "用户不存在"),
     PASSWORD_ERROR(1002, "密码错误"),
+    USER_EXIST(1003,"用户名已存在"),
 
 
     //JWT相关错误：token过期,token被篡改,token格式错误
-    TOKEN_INVALID(1003, "token无效"),
+    TOKEN_INVALID(1004, "token无效"),
 
 
     // 图书相关 2000

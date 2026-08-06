@@ -2,7 +2,9 @@ package com.coraline.library.service.impl;
 
 
 import com.coraline.library.common.enums.ResultCodeEnum;
+import com.coraline.library.common.enums.UserStatusEnum;
 import com.coraline.library.dto.UserLoginDTO;
+import com.coraline.library.dto.UserRegisterDTO;
 import com.coraline.library.entity.User;
 import com.coraline.library.exception.BusinessException;
 import com.coraline.library.mapper.UserMapper;
@@ -33,6 +35,79 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+
+    }
+
+    /**
+     * 注册
+     */
+    @Override
+    public void register(UserRegisterDTO dto) {
+
+        // ===== 参数校验 =====
+        if(dto.getUsername() == null
+                || dto.getUsername().trim().isEmpty()){
+
+            throw new BusinessException(
+                    ResultCodeEnum.PARAM_ERROR,
+                    "用户名不能为空"
+            );
+
+        }
+
+
+        if(dto.getPassword() == null
+                || dto.getPassword().trim().isEmpty()){
+
+            throw new BusinessException(
+                    ResultCodeEnum.PARAM_ERROR,
+                    "密码不能为空"
+            );
+
+        }
+
+        User exist =
+                userMapper.findByUsername(
+                        dto.getUsername()
+                );
+
+
+        if(exist != null){
+
+            throw new BusinessException(
+                    ResultCodeEnum.USER_EXIST,
+                    "用户名已存在"
+            );
+
+        }
+
+
+        User user = new User();
+
+
+        user.setUsername(
+                dto.getUsername()
+        );
+
+
+        user.setPassword(
+                passwordEncoder.encode(
+                        dto.getPassword()
+                )
+        );
+
+
+        // 默认普通用户
+        user.setRole("USER");
+
+
+        // 默认启用
+        user.setStatus(
+                UserStatusEnum.ENABLE.getCode()
+        );
+
+
+        userMapper.insert(user);
 
     }
 

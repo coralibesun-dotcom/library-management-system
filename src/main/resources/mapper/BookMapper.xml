@@ -5,9 +5,23 @@
 
 <mapper namespace="com.coraline.library.mapper.BookMapper">
 
+    <!-- 结果映射：数据库列 name 映射到实体属性 title -->
+    <resultMap id="bookResultMap" type="com.coraline.library.entity.Book">
+        <id column="id" property="id"/>
+        <result column="name" property="title"/>
+        <result column="author" property="author"/>
+        <result column="isbn" property="isbn"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="publisher" property="publisher"/>
+        <result column="stock" property="stock"/>
+        <result column="description" property="description"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
 
     <!-- 条件分页查询图书 -->
-    <select id="findPage" resultType="Book">
+    <select id="findPage" resultMap="bookResultMap">
 
         SELECT *
         FROM book
@@ -17,7 +31,7 @@
             <!-- 关键词搜索 -->
             <if test="dto.keyword != null and dto.keyword != ''">
                 AND (
-                title LIKE CONCAT('%', #{dto.keyword}, '%')
+                name LIKE CONCAT('%', #{dto.keyword}, '%')
                 OR author LIKE CONCAT('%', #{dto.keyword}, '%')
                 OR publisher LIKE CONCAT('%', #{dto.keyword}, '%')
                 OR isbn LIKE CONCAT('%', #{dto.keyword}, '%')
@@ -57,7 +71,7 @@
             <!-- 关键词搜索 -->
             <if test="dto.keyword != null and dto.keyword != ''">
                 AND (
-                title LIKE CONCAT('%', #{dto.keyword}, '%')
+                name LIKE CONCAT('%', #{dto.keyword}, '%')
                 OR author LIKE CONCAT('%', #{dto.keyword}, '%')
                 OR publisher LIKE CONCAT('%', #{dto.keyword}, '%')
                 OR isbn LIKE CONCAT('%', #{dto.keyword}, '%')
@@ -83,7 +97,7 @@
 
 
     <!-- 查看详情 -->
-    <select id="findById" resultType="Book">
+    <select id="findById" resultMap="bookResultMap">
 
         SELECT *
         FROM book
@@ -98,7 +112,7 @@
         INSERT INTO book
         (
         category_id,
-        title,
+        name,
         author,
         publisher,
         isbn,
@@ -127,7 +141,7 @@
         UPDATE book
         SET
         category_id = #{categoryId},
-        title = #{title},
+        name = #{title},
         author = #{author},
         publisher = #{publisher},
         isbn = #{isbn},

@@ -3,6 +3,7 @@ package com.coraline.library.controller;
 
 import com.coraline.library.common.Result;
 import com.coraline.library.dto.UserLoginDTO;
+import com.coraline.library.dto.UserRegisterDTO;
 import com.coraline.library.service.UserService;
 import com.coraline.library.vo.LoginVO;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,20 @@ public class UserController {
 
     }
 
+
+    /**
+     * 用户注册
+     */
+    @PostMapping("/register")   // 新增
+    public Result<Void> register(
+            @RequestBody UserRegisterDTO dto
+    ){
+
+        userService.register(dto);
+
+        return Result.success();
+
+    }
 
 
     /**

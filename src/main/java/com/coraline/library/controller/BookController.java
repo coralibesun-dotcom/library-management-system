@@ -29,6 +29,7 @@ public class BookController {
     /**
      * 分页查询图书
      */
+    @RequireRole({"GUEST","USER","ADMIN"})
     @GetMapping("/page")
     public Result<PageResult<Book>> findPage(
             BookQueryDTO dto
@@ -45,6 +46,7 @@ public class BookController {
     /**
      * 根据id查询图书详情
      */
+    @RequireRole({"GUEST","USER","ADMIN"})
     @GetMapping("/{id}")
     public Result<Book> findById(
             @PathVariable Long id
