@@ -1,9 +1,12 @@
 package com.coraline.library.service.impl;
 
 
+import com.coraline.library.common.PageResult;
+import com.coraline.library.common.context.UserContext;
 import com.coraline.library.common.enums.ResultCodeEnum;
 import com.coraline.library.common.enums.UserStatusEnum;
 import com.coraline.library.dto.UserLoginDTO;
+import com.coraline.library.dto.UserQueryDTO;
 import com.coraline.library.dto.UserRegisterDTO;
 import com.coraline.library.entity.User;
 import com.coraline.library.exception.BusinessException;
@@ -11,8 +14,11 @@ import com.coraline.library.mapper.UserMapper;
 import com.coraline.library.service.UserService;
 import com.coraline.library.utils.JwtUtil;
 import com.coraline.library.vo.LoginVO;
+import com.coraline.library.vo.UserVO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -136,6 +142,18 @@ public class UserServiceImpl implements UserService {
         }
 
 
+        if(UserStatusEnum.DISABLE.getCode()
+                .equals(user.getStatus())){
+
+
+            throw new BusinessException(
+                    ResultCodeEnum.USER_DISABLE,
+                    "账号已被禁用"
+            );
+
+        }
+
+
         boolean result =
                 passwordEncoder.matches(
                         dto.getPassword(),
@@ -174,10 +192,103 @@ public class UserServiceImpl implements UserService {
      * 根据id查询用户
      */
     @Override
-    public LoginVO findById(Long id) {
+    public LoginVO findCurrentUser() {
 
 
-        User user = userMapper.findById(id);
+        // 从JWT上下文获取当前用户id
+        Long userId =
+                UserContext.getUserId();
+
+
+        User user =
+                userMapper.findById(userId);
+
+
+
+        if(user == null){
+
+            throw new BusinessException(
+                    ResultCodeEnum.USER_NOT_FOUND,
+                    "用户不存在"
+            );
+
+        }
+
+        if(UserStatusEnum.DISABLE.getCode()
+                .equals(user.getStatus())){
+
+
+            throw new BusinessException(
+                    ResultCodeEnum.USER_DISABLE,
+                    "账号已被禁用"
+            );
+
+        }
+
+        return convertToVO(user);
+
+    }
+
+
+
+
+    /**
+     * 管理员查看全部用户
+     */
+    @Override
+    public PageResult<UserVO> findPage(UserQueryDTO dto) {
+
+
+        int offset =
+                (dto.getPageNum() - 1)
+                        * dto.getPageSize();
+
+
+
+        List<User> users =
+                userMapper.findPage(
+                        dto,
+                        offset
+                );
+
+
+        Long total =
+                userMapper.count(dto);
+
+
+
+        List<UserVO> list =
+                users.stream()
+                        .map(this::convertToUserVO)
+                        .toList();
+
+
+
+        return new PageResult<>(
+                list,
+                total
+        );
+
+    }
+
+
+
+    /**
+     * 修改用户状态
+     *
+     * 例如：
+     * 1 启用
+     * 0 禁用
+     */
+    @Override
+    public void updateStatus(
+            Long id,
+            Integer status
+    ) {
+
+
+        User user =
+                userMapper.findById(id);
 
 
         if(user == null){
@@ -190,13 +301,96 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        return convertToVO(user);
+        userMapper.updateStatus(
+                id,
+                status
+        );
 
     }
+
+
+
+
+
+    /**
+     * 修改用户角色
+     *
+     * USER
+     * ADMIN
+     */
+    @Override
+    public void updateRole(
+            Long id,
+            String role
+    ) {
+
+
+        User user =
+                userMapper.findById(id);
+
+
+        if(user == null){
+
+            throw new BusinessException(
+                    ResultCodeEnum.USER_NOT_FOUND,
+                    "用户不存在"
+            );
+
+        }
+
+
+
+        userMapper.updateRole(
+                id,
+                role
+        );
+
+    }
+
+
 
     /**
      * Entity转换VO
      */
+
+    //UserVO
+    private UserVO convertToUserVO(User user){
+
+
+        UserVO vo = new UserVO();
+
+
+        vo.setId(
+                user.getId()
+        );
+
+
+        vo.setUsername(
+                user.getUsername()
+        );
+
+
+        vo.setRole(
+                user.getRole()
+        );
+
+
+        vo.setStatus(
+                user.getStatus()
+        );
+
+
+        vo.setCreateTime(
+                user.getCreateTime()
+        );
+
+
+        return vo;
+
+    }
+
+
+    //LoginVO
     private LoginVO convertToVO(User user){
 
 

@@ -117,3 +117,18 @@ UserContext保存
 是否用户可修改	          可以	        不能直接改
 可信程度	                  低	         高
 用途	查询别人资料（管理员）	  查询自己的资料
+
+
+## 5.LoginInterceptor和WebConfig的关系
+#### (1)
+小区：
+物业规定：
+1号门需要保安检查
+2号门不用检查
+这是 WebConfig。
+
+然后：
+保安：
+请出示门禁卡
+验证身份
+这是 LoginInterceptor。

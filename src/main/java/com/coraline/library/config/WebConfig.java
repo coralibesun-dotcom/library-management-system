@@ -36,7 +36,9 @@ public class WebConfig implements WebMvcConfigurer {
 
                 // 登录接口不能拦截
                 .excludePathPatterns(
-                        "/user/login"
+                        "/user/login",
+                        // 注册
+                        "/user/register"
                 );
 
     }

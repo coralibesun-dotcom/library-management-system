@@ -1,8 +1,11 @@
 package com.coraline.library.mapper;
 
+import com.coraline.library.dto.UserQueryDTO;
 import com.coraline.library.dto.UserRegisterDTO;
 import com.coraline.library.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
@@ -15,5 +18,29 @@ public interface UserMapper {
 
     // 查询当前登录用户信息
     User findById(Long id);
+
+    // 分页可筛选查询全部用户
+    List<User> findPage(
+            UserQueryDTO dto,
+            Integer offset
+    );
+
+    //统计用户数量
+    Long count(
+            UserQueryDTO dto
+    );
+
+    // 修改用户状态
+    int updateStatus(
+            Long id,
+            Integer status
+    );
+
+
+    // 修改用户角色
+    int updateRole(
+            Long id,
+            String role
+    );
 
 }

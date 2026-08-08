@@ -27,7 +27,7 @@ public class UserController {
     /**
      * 用户注册
      */
-    @PostMapping("/register")   // 新增
+    @PostMapping("/register")
     public Result<Void> register(
             @RequestBody UserRegisterDTO dto
     ){
@@ -55,17 +55,16 @@ public class UserController {
 
 
     /**
-     * 根据id查询用户
+     * 查询当前登录用户信息
      */
-    @GetMapping("/{id}")
-    public Result<LoginVO> findById(
-            @PathVariable("id") Long id
-    ){
+    @GetMapping("/info")
+    public Result<LoginVO> info(){
 
         return Result.success(
-                userService.findById(id)
+                userService.findCurrentUser()
         );
 
     }
+
 
 }

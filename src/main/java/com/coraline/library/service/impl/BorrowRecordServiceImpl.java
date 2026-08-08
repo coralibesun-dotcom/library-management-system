@@ -36,6 +36,10 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
     public void borrowBook(BorrowDTO borrowDTO) {
 
 
+        // 不再相信前端传来的userId
+        Long userId = UserContext.getUserId();
+
+
         // 1. 查询图书是否存在
         Book book = bookMapper.findById(borrowDTO.getBookId());
 
@@ -51,7 +55,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
 
 
         // 2. 判断用户是否已经借过该书
-        if(hasBorrowed(borrowDTO.getUserId(), borrowDTO.getBookId())){
+        if(hasBorrowed(userId, borrowDTO.getBookId())){
 
             throw new BusinessException(
                     ResultCodeEnum.BORROW_ALREADY,
@@ -63,7 +67,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
 
         // 3. 判断用户当前借阅数量
         int count =
-                borrowRecordMapper.countBorrowingByUserId(borrowDTO.getUserId());
+                borrowRecordMapper.countBorrowingByUserId(userId);
 
 
         if(count >= 5){
@@ -102,7 +106,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
         // 6. 新增借阅记录
         BorrowRecord record = new BorrowRecord();
 
-        record.setUserId(borrowDTO.getUserId());
+        record.setUserId(userId);
         record.setBookId(borrowDTO.getBookId());
         record.setStatus(
                 BorrowStatusEnum.BORROWING.getCode()
@@ -165,8 +169,22 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
 
         }
 
+        //2.校验归还人是否是借阅人
+        Long currentUserId =
+                UserContext.getUserId();
 
-        // 2. 判断是否已经归还
+
+        if(currentUserId == null
+                || !currentUserId.equals(record.getUserId())){
+
+            throw new BusinessException(
+                    ResultCodeEnum.FORBIDDEN,
+                    "不能归还其他用户的借阅记录"
+            );
+
+        }
+
+        // 3. 判断是否已经归还
         if(BorrowStatusEnum.RETURNED.getCode()
                 .equals(record.getStatus())){
 
@@ -178,11 +196,11 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
         }
 
 
-        // 3. 更新借阅状态
+        // 4. 更新借阅状态
         borrowRecordMapper.returnBook(id);
 
 
-        // 4. 增加库存
+        // 5. 增加库存
         bookMapper.increaseStock(record.getBookId());
 
     }

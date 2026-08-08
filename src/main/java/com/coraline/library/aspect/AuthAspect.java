@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class AuthAspect {
 
 
-    @Before("@annotation(requireRole)")
+    @Before("@annotation(requireRole) || @within(requireRole)")
     public void checkRole(
             RequireRole requireRole
     ){
