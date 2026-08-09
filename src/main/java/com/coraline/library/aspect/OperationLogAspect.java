@@ -23,47 +23,61 @@ public class OperationLogAspect {
 
     public OperationLogAspect(
             OperationLogService operationLogService
-    ){
+    ) {
 
         this.operationLogService = operationLogService;
 
     }
 
 
-
     @AfterReturning("@annotation(log)")
     public void recordLog(
             JoinPoint joinPoint,
             Log log
-    ){
+    ) {
 
 
-        OperationLog operationLog =
-                new OperationLog();
+        try {
 
 
-        operationLog.setOperation(
-                log.value()
-        );
+            OperationLog operationLog =
+                    new OperationLog();
 
 
-        operationLog.setTarget(
-                joinPoint.getTarget()
-                        .getClass()
-                        .getSimpleName()
-        );
+            operationLog.setOperation(
+                    log.value()
+            );
 
 
-        operationLog.setCreateTime(
-                LocalDateTime.now()
-        );
+            operationLog.setTarget(
+                    joinPoint.getTarget()
+                            .getClass()
+                            .getSimpleName()
+            );
 
 
-        operationLog.setUserId(UserContext.getUserId());
+            operationLog.setCreateTime(
+                    LocalDateTime.now()
+            );
 
 
-        operationLogService.record(operationLog);
+            operationLog.setUserId(
+                    UserContext.getUserId()
+            );
+
+
+            operationLogService.record(
+                    operationLog
+            );
+
+
+        } catch (Exception e) {
+
+            // 日志失败不能影响业务结果
+
+            e.printStackTrace();
+
+        }
 
     }
-
 }

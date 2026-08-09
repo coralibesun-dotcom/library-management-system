@@ -4,6 +4,7 @@ package com.coraline.library.service.impl;
 import com.coraline.library.common.PageResult;
 import com.coraline.library.common.context.UserContext;
 import com.coraline.library.common.enums.ResultCodeEnum;
+import com.coraline.library.common.enums.RoleEnum;
 import com.coraline.library.common.enums.UserStatusEnum;
 import com.coraline.library.dto.UserLoginDTO;
 import com.coraline.library.dto.UserQueryDTO;
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
             throw new BusinessException(
                     ResultCodeEnum.PARAM_ERROR,
-                    "用户名不能为空"
+                    "用户名或密码错误"
             );
 
         }
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
             throw new BusinessException(
                     ResultCodeEnum.PARAM_ERROR,
-                    "密码不能为空"
+                    "用户名或密码错误"
             );
 
         }
@@ -300,6 +301,35 @@ public class UserServiceImpl implements UserService {
 
         }
 
+        if(status == null
+                ||
+                (!status.equals(UserStatusEnum.ENABLE.getCode())
+                        &&
+                        !status.equals(UserStatusEnum.DISABLE.getCode()))){
+
+            throw new BusinessException(
+                    ResultCodeEnum.PARAM_ERROR,
+                    "用户状态错误"
+            );
+
+        }
+
+
+        Long currentUserId =
+                UserContext.getUserId();
+
+
+        if(currentUserId.equals(id)
+                &&
+                UserStatusEnum.DISABLE.getCode()
+                        .equals(status)){
+
+            throw new BusinessException(
+                    ResultCodeEnum.FORBIDDEN,
+                    "不能禁用自己的账号"
+            );
+
+        }
 
         userMapper.updateStatus(
                 id,
@@ -338,8 +368,47 @@ public class UserServiceImpl implements UserService {
 
         }
 
+        // 校验角色是否合法，防止前端传入不存在的角色，例如 ROOT、SUPER_ADMIN
+        boolean valid = false;
 
 
+        for(RoleEnum roleEnum : RoleEnum.values()){
+
+
+            if(roleEnum.name().equals(role)){
+
+                valid = true;
+                break;
+
+            }
+
+        }
+
+
+
+        if(!valid){
+
+            throw new BusinessException(
+                    ResultCodeEnum.PARAM_ERROR,
+                    "角色不存在"
+            );
+
+        }
+
+       // 当前登录用户
+        Long currentUserId =
+                UserContext.getUserId();
+
+
+        // 防止管理员修改自己的角色
+        if(currentUserId.equals(id)){
+
+            throw new BusinessException(
+                    ResultCodeEnum.FORBIDDEN,
+                    "不能修改自己的角色"
+            );
+
+        }
         userMapper.updateRole(
                 id,
                 role

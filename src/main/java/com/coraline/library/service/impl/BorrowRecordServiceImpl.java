@@ -103,21 +103,46 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
         }
 
 
-        // 6. 新增借阅记录
+        // 6. 减少库存
+        // 先扣库存，再新增借阅记录
+        // 防止库存扣失败，但是借阅记录已经生成
+        int result =
+                bookMapper.decreaseStock(
+                        borrowDTO.getBookId()
+                );
+
+
+        // 修改点：
+        // 并发情况下，如果库存已经被别人借走
+        // SQL会返回0，这里直接终止
+        if(result == 0){
+
+            throw new BusinessException(
+                    ResultCodeEnum.STOCK_NOT_ENOUGH,
+                    "库存不足"
+            );
+
+        }
+
+
+
+        // 7. 新增借阅记录
         BorrowRecord record = new BorrowRecord();
 
+
         record.setUserId(userId);
-        record.setBookId(borrowDTO.getBookId());
+
+        record.setBookId(
+                borrowDTO.getBookId()
+        );
+
+
         record.setStatus(
                 BorrowStatusEnum.BORROWING.getCode()
         );
 
 
         borrowRecordMapper.insert(record);
-
-
-        // 7. 减少库存
-        bookMapper.decreaseStock(borrowDTO.getBookId());
 
     }
     @Override
@@ -197,9 +222,17 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
 
 
         // 4. 更新借阅状态
-        borrowRecordMapper.returnBook(id);
+        int result =
+                borrowRecordMapper.returnBook(id);borrowRecordMapper.returnBook(id);
 
+        if(result == 0){
 
+            throw new BusinessException(
+                    ResultCodeEnum.BOOK_RETURNED,
+                    "该图书已经归还"
+            );
+
+        }
         // 5. 增加库存
         bookMapper.increaseStock(record.getBookId());
 

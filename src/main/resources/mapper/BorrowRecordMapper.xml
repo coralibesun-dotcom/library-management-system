@@ -85,6 +85,7 @@
         status = 1,
         return_time = NOW()
         WHERE id = #{id}
+        AND status = 0
 
     </update>
 </mapper>

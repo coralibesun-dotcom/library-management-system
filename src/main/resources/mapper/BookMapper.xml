@@ -96,6 +96,14 @@
     </select>
 
 
+    <select id="countByCategoryId" resultType="java.lang.Integer">
+
+        SELECT COUNT(*)
+        FROM book
+        WHERE category_id = #{categoryId}
+
+    </select>
+
     <!-- 查看详情 -->
     <select id="findById" resultMap="bookResultMap">
 
@@ -187,6 +195,7 @@
         UPDATE book
         SET stock = stock - 1
         WHERE id = #{id}
+        AND status = 1
         AND stock > 0
 
     </update>

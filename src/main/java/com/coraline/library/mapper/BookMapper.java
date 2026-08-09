@@ -17,8 +17,11 @@ public interface BookMapper {
             @Param("pageSize") Integer pageSize
     );
 
-    // 查询图书总数量
+    // 查询图书总数量<分页>
     Long count(@Param("dto") BookQueryDTO dto);
+
+    // 按id查询图书总数量
+    Integer countByCategoryId(Long categoryId);
 
 
     // 查看详情

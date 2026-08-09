@@ -4,6 +4,7 @@ package com.coraline.library.service.impl;
 import com.coraline.library.common.enums.ResultCodeEnum;
 import com.coraline.library.entity.Category;
 import com.coraline.library.exception.BusinessException;
+import com.coraline.library.mapper.BookMapper;
 import com.coraline.library.mapper.CategoryMapper;
 import com.coraline.library.service.CategoryService;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryMapper categoryMapper;
 
-
-    public CategoryServiceImpl(CategoryMapper categoryMapper) {
-
+    public CategoryServiceImpl(CategoryMapper categoryMapper, BookMapper bookMapper) {
         this.categoryMapper = categoryMapper;
-
+        this.bookMapper = bookMapper;
     }
+
+    private final BookMapper bookMapper;
+
+
+
 
 
 
@@ -81,6 +85,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(Long id) {
+        Integer count = bookMapper.countByCategoryId(id);
+
+        if(count > 0){
+            throw new BusinessException(ResultCodeEnum.CATEGORY_HAS_BOOK,"该分类下存在图书，无法删除");
+        }
 
         categoryMapper.delete(id);
 

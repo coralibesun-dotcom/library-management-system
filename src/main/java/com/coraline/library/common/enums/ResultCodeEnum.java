@@ -49,7 +49,7 @@ public enum ResultCodeEnum {
 
     //分类
     CATEGORY_NOT_FOUND(4001,"分类不存在"),
-
+    CATEGORY_HAS_BOOK(4002,"该分类下存在图书，无法删除"),
 
 
     // 系统

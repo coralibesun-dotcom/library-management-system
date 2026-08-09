@@ -79,6 +79,11 @@ public class BookServiceImpl implements BookService {
     @Log("修改图书")
     @Override
     public void updateBook(Book book) {
+        Book existBook = bookMapper.findById(book.getId());
+
+        if (existBook == null) {
+            throw new BusinessException( ResultCodeEnum.BOOK_NOT_FOUND,"图书不存在");
+        }
         bookMapper.update(book);
     }
 

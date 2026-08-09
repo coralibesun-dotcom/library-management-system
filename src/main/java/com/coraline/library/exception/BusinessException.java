@@ -12,7 +12,9 @@ public class BusinessException extends RuntimeException {
     private final Integer code;
 
 
-
+    /**
+     * 自定义提示信息
+     */
     public BusinessException(
             ResultCodeEnum resultCodeEnum,
             String message
@@ -24,5 +26,19 @@ public class BusinessException extends RuntimeException {
 
     }
 
+
+
+    /**
+     * 使用枚举默认提示
+     */
+    public BusinessException(
+            ResultCodeEnum resultCodeEnum
+    ){
+
+        super(resultCodeEnum.getMessage());
+
+        this.code = resultCodeEnum.getCode();
+
+    }
 
 }

@@ -7,6 +7,7 @@ import com.coraline.library.common.annotation.RequireRole;
 import com.coraline.library.dto.BookQueryDTO;
 import com.coraline.library.entity.Book;
 import com.coraline.library.service.BookService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -32,7 +33,7 @@ public class BookController {
     @RequireRole({"GUEST","USER","ADMIN"})
     @GetMapping("/page")
     public Result<PageResult<Book>> findPage(
-            BookQueryDTO dto
+            @Validated BookQueryDTO dto
     ){
 
         return Result.success(
