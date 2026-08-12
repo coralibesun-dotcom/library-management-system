@@ -7,13 +7,14 @@ import com.coraline.library.common.annotation.RequireRole;
 import com.coraline.library.dto.OperationLogQueryDTO;
 import com.coraline.library.entity.OperationLog;
 import com.coraline.library.service.OperationLogService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/Log")
+@RequestMapping("/log")
 public class OperationLogController {
 
 
@@ -33,7 +34,7 @@ public class OperationLogController {
     @RequireRole("ADMIN")
     @GetMapping("/page")
     public Result<PageResult<OperationLog>> findPage(
-            OperationLogQueryDTO query
+            @Validated OperationLogQueryDTO query
     ){
 
         return Result.success(

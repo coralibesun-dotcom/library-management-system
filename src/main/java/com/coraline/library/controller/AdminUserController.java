@@ -7,6 +7,7 @@ import com.coraline.library.dto.UserQueryDTO;
 import com.coraline.library.service.UserService;
 import com.coraline.library.vo.UserVO;
 import com.coraline.library.common.PageResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -40,7 +41,7 @@ public class AdminUserController {
      */
     @GetMapping("/page")
     public Result<PageResult<UserVO>> findPage(
-            UserQueryDTO dto
+            @Validated UserQueryDTO dto
     ){
 
         return Result.success(

@@ -126,7 +126,9 @@
         isbn,
         description,
         stock,
-        status
+        status,
+        create_time,
+        update_time
         )
         VALUES
         (
@@ -137,7 +139,9 @@
         #{isbn},
         #{description},
         #{stock},
-        #{status}
+        #{status},
+        NOW(),
+        NOW()
         )
 
     </insert>
@@ -154,7 +158,8 @@
         publisher = #{publisher},
         isbn = #{isbn},
         description = #{description},
-        stock = #{stock}
+        stock = #{stock},
+        update_time = NOW()
         WHERE id = #{id}
 
     </update>
@@ -164,7 +169,8 @@
     <update id="updateStatus">
 
         UPDATE book
-        SET status = #{status}
+        SET status = #{status},
+        update_time = NOW()
         WHERE id = #{id}
 
     </update>
@@ -174,7 +180,8 @@
     <update id="batchUpdateStatus">
 
         UPDATE book
-        SET status = #{status}
+        SET status = #{status},
+        update_time = NOW()
         WHERE id IN
         <foreach collection="ids"
                  item="id"
@@ -193,7 +200,8 @@
     <update id="decreaseStock">
 
         UPDATE book
-        SET stock = stock - 1
+        SET stock = stock - 1,
+        update_time = NOW()
         WHERE id = #{id}
         AND status = 1
         AND stock > 0
@@ -205,7 +213,8 @@
     <update id="increaseStock">
 
         UPDATE book
-        SET stock = stock + 1
+        SET stock = stock + 1,
+        update_time = NOW()
         WHERE id = #{id}
 
     </update>

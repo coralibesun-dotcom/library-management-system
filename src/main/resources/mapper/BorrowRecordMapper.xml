@@ -12,14 +12,18 @@
         user_id,
         book_id,
         borrow_time,
-        status
+        status,
+        create_time,
+        update_time
         )
         VALUES
         (
         #{userId},
         #{bookId},
         NOW(),
-        #{status}
+        #{status},
+        NOW(),
+        NOW()
         )
 
     </insert>
@@ -83,7 +87,8 @@
         UPDATE borrow_record
         SET
         status = 1,
-        return_time = NOW()
+        return_time = NOW(),
+        update_time = NOW()
         WHERE id = #{id}
         AND status = 0
 

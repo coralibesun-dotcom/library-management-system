@@ -132,3 +132,35 @@ UserContext保存
 请出示门禁卡
 验证身份
 这是 LoginInterceptor。
+
+
+## 6.前端模板教程
+src
+│
+├── api
+│   ├── user.js
+│   ├── book.js
+│   ├── category.js
+│   ├── borrow.js
+│   └── operationLog.js
+│
+├── components          ← 模板
+├── layout              ← 模板
+├── router              ← 重写
+├── store
+│   └── modules
+│       └── user.js     ← 重写
+│
+├── utils
+│   └── request.js      ← 接你的 JWT
+│
+├── views
+│   ├── login           ← 改
+│   ├── dashboard
+│   ├── book            ← 新增
+│   ├── category        ← 新增
+│   ├── borrow          ← 新增
+│   ├── user            ← 新增
+│   └── operation-log   ← 新增
+│
+└── styles              ← 模板

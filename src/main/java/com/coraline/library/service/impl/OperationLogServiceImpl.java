@@ -58,17 +58,6 @@ public class OperationLogServiceImpl implements OperationLogService {
             OperationLogQueryDTO query
     ){
 
-
-        if(query.getPageNum() == null){
-            query.setPageNum(1);
-        }
-
-
-        if(query.getPageSize() == null){
-            query.setPageSize(10);
-        }
-
-
         Integer offset =
                 (query.getPageNum()-1)
                         * query.getPageSize();

@@ -18,9 +18,13 @@
     <insert id="insert">
 
         INSERT INTO category
-        ( name )
+        ( name,
+        create_time,
+        update_time  )
         VALUES
-        ( #{name} )
+        ( #{name},
+        NOW(),
+        NOW()    )
 
     </insert>
 
@@ -28,7 +32,8 @@
 
         UPDATE category
         SET
-        name = #{name}
+        name = #{name},
+        update_time = NOW()
         WHERE id = #{id}
 
     </update>

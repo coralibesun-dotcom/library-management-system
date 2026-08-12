@@ -14,7 +14,7 @@ public interface UserService {
 
 
     // 登录业务
-    LoginVO login(UserLoginDTO dto);;
+    LoginVO login(UserLoginDTO dto);
 
     // 查询当前登录用户
     LoginVO findCurrentUser();

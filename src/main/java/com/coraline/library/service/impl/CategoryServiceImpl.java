@@ -1,6 +1,7 @@
 package com.coraline.library.service.impl;
 
 
+import com.coraline.library.common.annotation.Log;
 import com.coraline.library.common.enums.ResultCodeEnum;
 import com.coraline.library.entity.Category;
 import com.coraline.library.exception.BusinessException;
@@ -67,6 +68,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     }
 
+
+    @Log("新增分类")
     @Override
     public void add(Category category) {
 
@@ -75,6 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
 
+    @Log("修改分类")
     @Override
     public void update(Category category) {
 
@@ -83,6 +87,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
 
+    @Log("删除分类")
     @Override
     public void delete(Long id) {
         Integer count = bookMapper.countByCategoryId(id);

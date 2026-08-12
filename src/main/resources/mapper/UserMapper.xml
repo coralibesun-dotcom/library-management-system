@@ -125,7 +125,8 @@
     <update id="updateStatus">
 
         UPDATE user
-        SET status = #{status}
+        SET status = #{status},
+        update_time = NOW()
         WHERE id = #{id}
 
     </update>
@@ -135,7 +136,8 @@
     <update id="updateRole">
 
         UPDATE user
-        SET role = #{role}
+        SET role = #{role},
+        update_time = NOW()
         WHERE id = #{id}
 
     </update>

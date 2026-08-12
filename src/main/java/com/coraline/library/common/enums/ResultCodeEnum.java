@@ -26,7 +26,7 @@ public enum ResultCodeEnum {
     PASSWORD_ERROR(1002, "密码错误"),
     USER_EXIST(1003,"用户名已存在"),
     USER_DISABLE(1004,"账号已被禁用"),
-
+    LOGIN_ERROR(1006,"用户名或密码错误"),
 
     //JWT相关错误：token过期,token被篡改,token格式错误
     TOKEN_INVALID(1005, "token无效"),

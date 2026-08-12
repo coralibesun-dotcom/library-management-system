@@ -39,9 +39,9 @@ public class BookQueryDTO {
 
     /**
      * 图书状态
-     * 例如：
+     * 0 草稿
      * 1 上架
-     * 0 下架
+     * 2 下架
      */
     private Integer status;
 

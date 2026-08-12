@@ -2,6 +2,7 @@ package com.coraline.library.service.impl;
 
 
 import com.coraline.library.common.PageResult;
+import com.coraline.library.common.annotation.Log;
 import com.coraline.library.common.context.UserContext;
 import com.coraline.library.common.enums.ResultCodeEnum;
 import com.coraline.library.common.enums.RoleEnum;
@@ -48,6 +49,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 注册
      */
+    @Log("用户注册")
     @Override
     public void register(UserRegisterDTO dto) {
 
@@ -57,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
             throw new BusinessException(
                     ResultCodeEnum.PARAM_ERROR,
-                    "用户名或密码错误"
+                    "用户名不能为空"
             );
 
         }
@@ -68,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
             throw new BusinessException(
                     ResultCodeEnum.PARAM_ERROR,
-                    "用户名或密码错误"
+                    "密码不能为空"
             );
 
         }
@@ -136,8 +138,7 @@ public class UserServiceImpl implements UserService {
         if(user == null){
 
             throw new BusinessException(
-                    ResultCodeEnum.USER_NOT_FOUND,
-                    "用户不存在"
+                    ResultCodeEnum.LOGIN_ERROR
             );
 
         }
@@ -165,8 +166,7 @@ public class UserServiceImpl implements UserService {
         if(!result){
 
             throw new BusinessException(
-                    ResultCodeEnum.PASSWORD_ERROR,
-                    "密码错误"
+                    ResultCodeEnum.LOGIN_ERROR
             );
 
         }
@@ -281,6 +281,7 @@ public class UserServiceImpl implements UserService {
      * 1 启用
      * 0 禁用
      */
+    @Log("修改用户状态")
     @Override
     public void updateStatus(
             Long id,
@@ -348,6 +349,7 @@ public class UserServiceImpl implements UserService {
      * USER
      * ADMIN
      */
+    @Log("修改用户角色")
     @Override
     public void updateRole(
             Long id,

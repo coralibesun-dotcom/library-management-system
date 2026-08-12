@@ -10,8 +10,6 @@ import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
 
-import java.time.LocalDateTime;
-
 
 @Aspect
 @Component
@@ -55,10 +53,6 @@ public class OperationLogAspect {
                             .getSimpleName()
             );
 
-
-            operationLog.setCreateTime(
-                    LocalDateTime.now()
-            );
 
 
             operationLog.setUserId(

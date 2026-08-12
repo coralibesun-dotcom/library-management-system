@@ -1,26 +1,27 @@
 package com.coraline.library.dto;
 
-
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
-
 @Data
 public class OperationLogQueryDTO {
-
 
     /**
      * 当前页
      */
-    private Integer pageNum;
+    @Min(value = 1, message = "页码必须大于0")
+    private Integer pageNum = 1;
 
 
     /**
      * 每页数量
      */
-    private Integer pageSize;
-
+    @Min(value = 1, message = "每页数量必须大于0")
+    @Max(value = 20, message = "每页最多20条")
+    private Integer pageSize = 10;
 
 
     /**
@@ -29,12 +30,10 @@ public class OperationLogQueryDTO {
     private Long userId;
 
 
-
     /**
      * 操作类型
      */
     private String operation;
-
 
 
     /**
@@ -43,11 +42,9 @@ public class OperationLogQueryDTO {
     private LocalDateTime startTime;
 
 
-
     /**
      * 结束时间
      */
     private LocalDateTime endTime;
-
 
 }

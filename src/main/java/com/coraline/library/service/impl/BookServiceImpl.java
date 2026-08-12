@@ -8,6 +8,7 @@ import com.coraline.library.dto.BookQueryDTO;
 import com.coraline.library.entity.Book;
 import com.coraline.library.exception.BusinessException;
 import com.coraline.library.mapper.BookMapper;
+import com.coraline.library.mapper.CategoryMapper;
 import com.coraline.library.service.BookService;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,11 @@ import java.util.List;
 @Service
 public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
+    private final CategoryMapper categoryMapper;
 
-
-    public BookServiceImpl(BookMapper bookMapper) {
+    public BookServiceImpl(BookMapper bookMapper, CategoryMapper categoryMapper) {
         this.bookMapper = bookMapper;
+        this.categoryMapper = categoryMapper;
     }
 
     @Override
@@ -70,6 +72,20 @@ public class BookServiceImpl implements BookService {
     @Override
     public void addBook(Book book){
 
+        // 校验分类是否存在
+        if (book.getCategoryId() == null) {
+            throw new BusinessException(
+                    ResultCodeEnum.PARAM_ERROR,
+                    "分类不能为空"
+            );
+        }
+
+        if (categoryMapper.findById(book.getCategoryId()) == null) {
+            throw new BusinessException(
+                    ResultCodeEnum.CATEGORY_NOT_FOUND
+            );
+        }
+
         book.setStatus(BookStatusEnum.DRAFT.getCode());
 
         bookMapper.insert(book);
@@ -90,7 +106,14 @@ public class BookServiceImpl implements BookService {
     @Log("修改图书状态")
     @Override
     public void updateStatus(Long id, Integer status) {
+        Book existBook = bookMapper.findById(id);
 
+        if (existBook == null) {
+            throw new BusinessException(
+                    ResultCodeEnum.BOOK_NOT_FOUND,
+                    "图书不存在"
+            );
+        }
         if(status == null){
             throw new BusinessException(
                     ResultCodeEnum.PARAM_ERROR,

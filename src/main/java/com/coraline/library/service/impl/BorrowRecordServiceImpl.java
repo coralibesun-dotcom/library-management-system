@@ -223,7 +223,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
 
         // 4. 更新借阅状态
         int result =
-                borrowRecordMapper.returnBook(id);borrowRecordMapper.returnBook(id);
+                borrowRecordMapper.returnBook(id);
 
         if(result == 0){
 
