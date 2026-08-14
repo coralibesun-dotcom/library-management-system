@@ -47,6 +47,10 @@
         <span>请输入用户名和密码登录</span>
       </div>
 
+      <div style="text-align:center;margin-top:10px;">
+        <el-link type="primary" @click="$router.push('/register')">没有账号？去注册</el-link>
+      </div>
+
     </el-form>
   </div>
 </template>
