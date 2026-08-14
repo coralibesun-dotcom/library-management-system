@@ -418,6 +418,10 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public void logout() {
+        // JWT 无状态认证，服务端无需处理
+    }
 
 
     /**

@@ -2,6 +2,7 @@ package com.coraline.library.mapper;
 
 import com.coraline.library.entity.BorrowRecord;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -22,7 +23,10 @@ public interface BorrowRecordMapper {
 
 
     // 查询用户是否已经借过该书
-    int countUserBook(Long userId, Long bookId);
+    int countUserBook(
+            @Param("userId") Long userId,
+            @Param("bookId") Long bookId
+    );
 
 
     // 查询我的借阅记录

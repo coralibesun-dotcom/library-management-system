@@ -43,6 +43,20 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         if (token == null || token.isEmpty()) {
 
+            String auth =
+                    request.getHeader("Authorization");
+
+            if (auth != null && auth.startsWith("Bearer ")) {
+
+                token = auth.substring(7);
+
+            }
+
+        }
+
+
+        if (token == null || token.isEmpty()) {
+
 
             response.setStatus(
                     HttpServletResponse.SC_UNAUTHORIZED

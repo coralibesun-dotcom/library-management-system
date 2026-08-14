@@ -66,5 +66,17 @@ public class UserController {
 
     }
 
+    /**
+     * 退出登录
+     */
+    @PostMapping("/logout")
+    public Result<Void> logout() {
+
+        userService.logout();
+
+        return Result.success();
+
+    }
+
 
 }

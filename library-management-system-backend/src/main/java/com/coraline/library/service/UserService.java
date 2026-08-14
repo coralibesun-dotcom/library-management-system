@@ -36,4 +36,6 @@ public interface UserService {
             String role
     );
 
+    // 退出登录
+    void logout();
 }
