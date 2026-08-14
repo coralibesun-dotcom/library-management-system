@@ -34,3 +34,26 @@ export function register(data) {
   })
 }
 
+export function getAdminUserPage(params) {
+  return request({
+    url: '/admin/user/page',
+    method: 'get',
+    params
+  })
+}
+
+export function updateUserStatus(params) {
+  return request({
+    url: '/admin/user/status',
+    method: 'put',
+    params
+  })
+}
+
+export function updateUserRole(params) {
+  return request({
+    url: '/admin/user/role',
+    method: 'put',
+    params
+  })
+}
