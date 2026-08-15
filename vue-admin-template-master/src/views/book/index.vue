@@ -9,6 +9,21 @@
         clearable
         @keyup.enter.native="handleSearch"
       />
+      <el-select
+        v-model="listQuery.categoryId"
+        placeholder="全部分类"
+        clearable
+        style="width: 150px; margin-right: 10px"
+        @change="handleSearch"
+      >
+        <el-option
+          v-for="item in categoryList"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        />
+      </el-select>
+
       <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
       <el-button type="success" icon="el-icon-plus" @click="handleAdd">新增图书</el-button>
     </div>
@@ -66,9 +81,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="110" align="center" fixed="right">
+      <el-table-column label="操作" width="160" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button
+            size="mini"
+            :type="scope.row.status === 1 ? 'danger' : 'success'"
+            @click="handleToggleStatus(scope.row)"
+          >
+            {{ scope.row.status === 1 ? '下架' : '上架' }}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -94,6 +116,17 @@
         <el-form-item label="出版社" prop="publisher">
           <el-input v-model="form.publisher" />
         </el-form-item>
+        <el-form-item label="分类" prop="categoryId">
+          <el-select v-model="form.categoryId" placeholder="请选择分类" style="width: 100%">
+            <el-option
+              v-for="item in categoryList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="ISBN" prop="isbn">
           <el-input v-model="form.isbn" />
         </el-form-item>
@@ -110,7 +143,8 @@
 </template>
 
 <script>
-import { getBookPage, addBook, updateBook } from '@/api/book'
+import { getBookPage, addBook, updateBook, updateBookStatus } from '@/api/book'
+import { getAllCategories } from '@/api/category'
 
 export default {
   data() {
@@ -121,8 +155,10 @@ export default {
       listQuery: {
         pageNum: 1,
         pageSize: 10,
-        keyword: ''
+        keyword: '',
+        categoryId: undefined
       },
+      categoryList: [],
       dialogVisible: false,
       dialogTitle: '',
       form: {
@@ -135,12 +171,14 @@ export default {
       },
       rules: {
         title: [{ required: true, message: '请输入书名', trigger: 'blur' }],
-        author: [{ required: true, message: '请输入作者', trigger: 'blur' }]
+        author: [{ required: true, message: '请输入作者', trigger: 'blur' }],
+        categoryId: [{ required: true, message: '请选择分类', trigger: 'change' }]
       }
     }
   },
   created() {
     this.getList()
+    this.getCategories()
   },
   methods: {
     async getList() {
@@ -159,6 +197,25 @@ export default {
       this.getList()
     },
 
+    // 拉取全部分类，喂给搜索栏的下拉框
+    async getCategories() {
+      const res = await getAllCategories()
+      this.categoryList = res.data
+    },
+
+    // 上架/下架切换：目标状态和当前状态相反（1↔2）
+    handleToggleStatus(row) {
+      const targetStatus = row.status === 1 ? 2 : 1
+      const actionText = targetStatus === 2 ? '下架' : '上架'
+      this.$confirm('确定要' + actionText + '《' + row.title + '》吗？', '提示', { type: 'warning' })
+        .then(async() => {
+          await updateBookStatus({ id: row.id, status: targetStatus })
+          this.$message.success(actionText + '成功')
+          this.getList()
+        })
+        .catch(() => {})
+    },
+
     // 新增：弹窗打开前，把表单洗成空白（防止上一次编辑的残留）
     handleAdd() {
       this.dialogTitle = '新增图书'
@@ -167,6 +224,7 @@ export default {
         title: '',
         author: '',
         publisher: '',
+        categoryId: undefined,
         isbn: '',
         stock: 0
       }
