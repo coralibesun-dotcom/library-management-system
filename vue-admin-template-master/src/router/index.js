@@ -96,6 +96,58 @@ export const constantRoutes = [
   },
 
   {
+    path: '/category',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Category',
+        component: () => import('@/views/category/index'),
+        meta: { title: '分类管理', icon: 'tree' }
+      }
+    ]
+  },
+
+  {
+    path: '/borrow',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Borrow',
+        component: () => import('@/views/borrow/index'),
+        meta: { title: '借阅管理', icon: 'el-icon-reading' }
+      }
+    ]
+  },
+
+  {
+    path: '/user',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'User',
+        component: () => import('@/views/user/index'),
+        meta: { title: '用户管理', icon: 'el-icon-user' }
+      }
+    ]
+  },
+
+  {
+    path: '/log',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Log',
+        component: () => import('@/views/log/index'),
+        meta: { title: '操作日志', icon: 'el-icon-document' }
+      }
+    ]
+  },
+
+  {
     path: '/form',
     component: Layout,
     children: [
