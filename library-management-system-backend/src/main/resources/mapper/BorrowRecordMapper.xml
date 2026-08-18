@@ -93,4 +93,16 @@
         AND status = 0
 
     </update>
+
+    <!-- 逾期标记：借阅中且借出超过30天 → 逾期 -->
+    <update id="markOverdue">
+
+        UPDATE borrow_record
+        SET
+        status = 2,
+        update_time = NOW()
+        WHERE status = 0
+        AND borrow_time &lt; DATE_SUB(NOW(), INTERVAL 30 DAY)
+
+    </update>
 </mapper>

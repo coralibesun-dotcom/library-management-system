@@ -51,9 +51,16 @@
 </template>
 
 <script>
-import { getAllBorrows, returnBook } from '@/api/borrow'
+import { getAllBorrows, getMyBorrows, returnBook } from '@/api/borrow'
+import { mapGetters } from 'vuex'
 
 export default {
+  computed: {
+    ...mapGetters(['roles']),
+    isAdmin() {
+      return this.roles.includes('admin')
+    }
+  },
   data() {
     return {
       list: [],
@@ -64,11 +71,10 @@ export default {
     this.getList()
   },
   methods: {
-    // 1. 拉取列表：调 getAllBorrows()，res.data 直接赋给 list（和分类页一样，不分页）
+    // 1. 拉取列表：管理员看全部，普通用户只看自己的（后端 /borrow/all 只放行 ADMIN）
     async getList() {
-      // TODO: 1) 开 loading  2) await getAllBorrows()  3) this.list = res.data  4) 关 loading
       this.listLoading = true
-      const res = await getAllBorrows()
+      const res = this.isAdmin ? await getAllBorrows() : await getMyBorrows()
       this.list = res.data
       this.listLoading = false
     },

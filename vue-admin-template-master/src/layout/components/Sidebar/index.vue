@@ -28,10 +28,20 @@ export default {
   components: { SidebarItem, Logo },
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      'roles'
     ]),
     routes() {
-      return this.$router.options.routes
+      // 根据当前用户角色过滤路由
+      const allRoutes = this.$router.options.routes
+      return allRoutes.filter(route => {
+        // hidden 的路由不显示（如登录页、404、demo 页）
+        if (route.hidden) return false
+        // 没有 meta.roles 的路由，所有人都能看到
+        if (!route.meta || !route.meta.roles) return true
+        // 有 roles 限制的，检查用户角色是否匹配
+        return route.meta.roles.some(role => this.roles.includes(role))
+      })
     },
     activeMenu() {
       const route = this.$route

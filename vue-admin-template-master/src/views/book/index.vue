@@ -25,7 +25,7 @@
       </el-select>
 
       <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-      <el-button type="success" icon="el-icon-plus" @click="handleAdd">新增图书</el-button>
+      <el-button v-if="isAdmin" type="success" icon="el-icon-plus" @click="handleAdd">新增图书</el-button>
     </div>
 
     <el-table
@@ -81,15 +81,29 @@
         </template>
       </el-table-column>
 
+      <!-- 操作列：同一个位置，两种身份两种按钮 -->
       <el-table-column label="操作" width="160" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+          <!-- 管理员：编辑 + 上下架 -->
+          <template v-if="isAdmin">
+            <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button
+              size="mini"
+              :type="scope.row.status === 1 ? 'danger' : 'success'"
+              @click="handleToggleStatus(scope.row)"
+            >
+              {{ scope.row.status === 1 ? '下架' : '上架' }}
+            </el-button>
+          </template>
+          <!-- 普通用户：借阅按钮，下架或没库存时置灰 -->
           <el-button
+            v-else
+            type="primary"
             size="mini"
-            :type="scope.row.status === 1 ? 'danger' : 'success'"
-            @click="handleToggleStatus(scope.row)"
+            :disabled="scope.row.status !== 1 || scope.row.stock <= 0"
+            @click="handleBorrow(scope.row)"
           >
-            {{ scope.row.status === 1 ? '下架' : '上架' }}
+            借阅
           </el-button>
         </template>
       </el-table-column>
@@ -145,8 +159,17 @@
 <script>
 import { getBookPage, addBook, updateBook, updateBookStatus } from '@/api/book'
 import { getAllCategories } from '@/api/category'
+import { borrowBook } from '@/api/borrow'
+import { mapGetters } from 'vuex'
 
 export default {
+  // 从 Vuex 取当前登录人的角色，算出"是不是管理员"
+  computed: {
+    ...mapGetters(['roles']),
+    isAdmin() {
+      return this.roles.includes('admin')
+    }
+  },
   data() {
     return {
       list: [],
@@ -236,6 +259,17 @@ export default {
       this.dialogTitle = '编辑图书'
       this.form = { ...row }
       this.dialogVisible = true
+    },
+
+    // 普通用户借书：$confirm 三件套，只传 bookId（后端从 token 里认人，不用传 userId）
+    handleBorrow(row) {
+      this.$confirm('确定要借阅《' + row.title + '》吗？', '提示', { type: 'info' })
+        .then(async() => {
+          await borrowBook({ bookId: row.id })
+          this.$message.success('借阅成功')
+          this.getList()   // 刷新列表，库存数字会变少
+        })
+        .catch(() => {})
     },
 
     // 提交：先校验，再按"有没有 id"决定走新增还是编辑

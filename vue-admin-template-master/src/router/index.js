@@ -67,6 +67,7 @@ export const constantRoutes = [
     redirect: '/example/table',
     name: 'Example',
     meta: { title: 'Example', icon: 'el-icon-s-help' },
+    hidden: true,
     children: [
       {
         path: 'table',
@@ -98,6 +99,7 @@ export const constantRoutes = [
   {
     path: '/category',
     component: Layout,
+    meta: { roles: ['admin'] },
     children: [
       {
         path: 'index',
@@ -124,6 +126,7 @@ export const constantRoutes = [
   {
     path: '/user',
     component: Layout,
+    meta: { roles: ['admin'] },
     children: [
       {
         path: 'index',
@@ -137,6 +140,7 @@ export const constantRoutes = [
   {
     path: '/log',
     component: Layout,
+    meta: { roles: ['admin'] },
     children: [
       {
         path: 'index',
@@ -150,6 +154,7 @@ export const constantRoutes = [
   {
     path: '/form',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -169,6 +174,7 @@ export const constantRoutes = [
       title: 'Nested',
       icon: 'nested'
     },
+    hidden: true,
     children: [
       {
         path: 'menu1',
@@ -222,6 +228,7 @@ export const constantRoutes = [
   {
     path: 'external-link',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'https://panjiachen.github.io/vue-element-admin-site/#/',

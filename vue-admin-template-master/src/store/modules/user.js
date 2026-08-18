@@ -59,10 +59,11 @@ const actions = {
         }
 
         // 根据后端实际返回字段适配
-        // 常见字段: username / nickname / name, avatar, roles
+        // 后端 LoginVO 返回: { id, username, role: "ADMIN"/"USER", token }
         const name = data.name || data.username || data.nickname || '未知用户'
         const avatar = data.avatar || 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
-        const roles = data.roles || ['user']
+        // 后端返回 role 是单数字符串（如 "ADMIN"），转成小写数组供前端权限过滤使用
+        const roles = data.role ? [data.role.toLowerCase()] : ['user']
 
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)

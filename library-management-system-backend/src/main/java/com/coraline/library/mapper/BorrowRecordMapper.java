@@ -39,4 +39,6 @@ public interface BorrowRecordMapper {
     // 归还图书
     int returnBook(Long id);
 
+    // 把借阅中超过30天未还的记录批量标记为逾期，返回影响行数
+    int markOverdue();
 }
