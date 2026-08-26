@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coraline.library.mapper.StatsMapper">
+
+    <!--
+        首页统计：一条 SQL 九个子查询，一次往返拿全
+        列名用 snake_case，靠 map-underscore-to-camel-case 映射到 StatsVO 的驼峰字段
+        COALESCE 防 NULL（表为空时 SUM 返回 NULL）
+    -->
+    <select id="getStats" resultType="com.coraline.library.dto.StatsVO">
+
+        SELECT
+            (SELECT COUNT(*) FROM library_management.book)                                       AS book_count,
+            (SELECT COALESCE(SUM(stock), 0) FROM library_management.book)                        AS total_stock,
+            (SELECT COUNT(*) FROM library_management.borrow_record WHERE status = 0)             AS borrowing_count,
+            (SELECT COUNT(*) FROM library_management.borrow_record WHERE status = 1)             AS returned_count,
+            (SELECT COUNT(*) FROM library_management.borrow_record WHERE status = 2)             AS overdue_count,
+            (SELECT COUNT(*) FROM library_management.borrow_record WHERE DATE(borrow_time) = CURDATE()) AS today_borrow,
+            (SELECT COUNT(*) FROM library_management.borrow_record WHERE DATE(return_time) = CURDATE()) AS today_return,
+            (SELECT COUNT(*) FROM library_management.user)                                       AS user_count,
+            (SELECT COUNT(*) FROM library_management.category)                                   AS category_count
+
+    </select>
+
+</mapper>

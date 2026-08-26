@@ -159,7 +159,7 @@
 <script>
 import { getBookPage, addBook, updateBook, updateBookStatus } from '@/api/book'
 import { getAllCategories } from '@/api/category'
-import { borrowBook } from '@/api/borrow'
+import { borrowBook, getMyBorrows } from '@/api/borrow'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -261,13 +261,20 @@ export default {
       this.dialogVisible = true
     },
 
-    // 普通用户借书：$confirm 三件套，只传 bookId（后端从 token 里认人，不用传 userId）
-    handleBorrow(row) {
+    // 普通用户借书：先查当前在借数量，达 5 本直接拦下，不发借书请求
+    async handleBorrow(row) {
+      // 预校验：拉自己的借阅记录，数 status===0（借阅中）的有几条
+      const myRes = await getMyBorrows()
+      const borrowingCount = (myRes.data || []).filter(r => r.status === 0).length
+      if (borrowingCount >= 5) {
+        this.$message.warning('已达借阅上限（5 本），请先归还部分图书再借')
+        return
+      }
       this.$confirm('确定要借阅《' + row.title + '》吗？', '提示', { type: 'info' })
         .then(async() => {
           await borrowBook({ bookId: row.id })
           this.$message.success('借阅成功')
-          this.getList()   // 刷新列表，库存数字会变少
+          this.getList()// 刷新列表，库存数字会变少
         })
         .catch(() => {})
     },
