@@ -5,10 +5,10 @@
       <el-button type="success" icon="el-icon-plus" @click="handleAdd">新增分类</el-button>
     </div>
 
-    <!-- 表格：4 列。注意 :data 直接绑 list，没有分页器 -->
+    <!-- 表格：4 列。:data 绑的是 computed 切出来的当前页，不是整个 list -->
     <el-table
       v-loading="listLoading"
-      :data="list"
+      :data="pagedList"
       element-loading-text="加载中..."
       border
       fit
@@ -27,6 +27,17 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 分页器：前端分页，total 直接用 list.length，翻页不发请求 -->
+    <el-pagination
+      style="margin-top: 15px"
+      background
+      layout="total, prev, pager, next"
+      :total="list.length"
+      :page-size="listQuery.pageSize"
+      :current-page="listQuery.pageNum"
+      @current-change="handlePageChange"
+    />
 
     <!-- Dialog：只有一个"分类名"字段 -->
     <el-dialog :visible.sync="dialogVisible" :title="dialogTitle" width="450px">
@@ -50,6 +61,11 @@ export default {
     return {
       list: [],
       listLoading: true,
+      // 前端分页参数：数据已经全量在 list 里，只记录"当前看到第几页"
+      listQuery: {
+        pageNum: 1,
+        pageSize: 10
+      },
       dialogVisible: false,
       dialogTitle: '',
       form: {
@@ -61,19 +77,36 @@ export default {
       }
     }
   },
+  computed: {
+    // 前端分页核心：把整份 list 按当前页码切成 10 条
+    pagedList() {
+      const start = (this.listQuery.pageNum - 1) * this.listQuery.pageSize
+      const end = start + this.listQuery.pageSize
+      return this.list.slice(start, end)
+    }
+  },
   created() {
     this.getList()
   },
   methods: {
     // ↓↓↓ 以下 5 个方法由你来填，照着 book/index.vue 的套路改 ↓↓↓
 
-    // 1. 拉取列表：调 getAllCategories()，注意它返回的是 res.data（不是 res.data.records）
+    // 1. 拉取列表：仍全量拉（分类天生就少），拉完校正页码防止停在空页
     async getList() {
-      // TODO: 1) 开 loading  2) await getAllCategories()  3) this.list = res.data  4) 关 loading
       this.listLoading = true
       const res = await getAllCategories()
       this.list = res.data
+      // 删除最后一条后页码可能"悬空"（第2页只剩0条），自动退回最后一页
+      const maxPage = Math.max(1, Math.ceil(this.list.length / this.listQuery.pageSize))
+      if (this.listQuery.pageNum > maxPage) {
+        this.listQuery.pageNum = maxPage
+      }
       this.listLoading = false
+    },
+
+    // 翻页：前端分页不发请求，只改页码，pagedList 自动重算
+    handlePageChange(pageNum) {
+      this.listQuery.pageNum = pageNum
     },
 
     // 2. 新增：打开弹窗前把 form 洗成空白（id: undefined, name: ''）

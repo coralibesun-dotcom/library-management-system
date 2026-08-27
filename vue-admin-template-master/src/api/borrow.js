@@ -29,3 +29,11 @@ export function getAllBorrows() {
   })
 }
 
+export function getBorrowPage(params) {
+  return request({
+    url: '/borrow/page',
+    method: 'get',
+    params
+  })
+}
+
