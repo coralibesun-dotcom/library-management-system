@@ -1,11 +1,15 @@
 package com.coraline.library.controller;
 
 
+import com.coraline.library.common.PageResult;
 import com.coraline.library.common.Result;
 import com.coraline.library.common.annotation.RequireRole;
 import com.coraline.library.dto.BorrowDTO;
+import com.coraline.library.dto.BorrowQueryDTO;
 import com.coraline.library.entity.BorrowRecord;
 import com.coraline.library.service.BorrowRecordService;
+import com.coraline.library.vo.BorrowRecordVO;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -91,6 +95,24 @@ public class BorrowRecordController {
 
         return Result.success(
                 borrowRecordService.findAll()
+        );
+
+    }
+
+
+    /**
+     * 分页查询借阅记录
+     * 管理员：查所有人的记录；普通用户：只查自己的（Service 层强制收敛）
+     * 示例：/borrow/page?pageNum=1&pageSize=10&status=0
+     */
+    @RequireRole({"USER","ADMIN"})
+    @GetMapping("/page")
+    public Result<PageResult<BorrowRecordVO>> findPage(
+            @Validated BorrowQueryDTO dto
+    ){
+
+        return Result.success(
+                borrowRecordService.findPage(dto)
         );
 
     }

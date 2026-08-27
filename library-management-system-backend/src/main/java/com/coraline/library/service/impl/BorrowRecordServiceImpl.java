@@ -1,17 +1,20 @@
 package com.coraline.library.service.impl;
 
+import com.coraline.library.common.PageResult;
 import com.coraline.library.common.annotation.Log;
 import com.coraline.library.common.context.UserContext;
 import com.coraline.library.common.enums.BookStatusEnum;
 import com.coraline.library.common.enums.BorrowStatusEnum;
 import com.coraline.library.common.enums.ResultCodeEnum;
 import com.coraline.library.dto.BorrowDTO;
+import com.coraline.library.dto.BorrowQueryDTO;
 import com.coraline.library.entity.Book;
 import com.coraline.library.entity.BorrowRecord;
 import com.coraline.library.exception.BusinessException;
 import com.coraline.library.mapper.BookMapper;
 import com.coraline.library.mapper.BorrowRecordMapper;
 import com.coraline.library.service.BorrowRecordService;
+import com.coraline.library.vo.BorrowRecordVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -175,6 +178,39 @@ public class BorrowRecordServiceImpl implements BorrowRecordService  {
         return borrowRecordMapper.findAll();
 
     }
+    @Override
+    public PageResult<BorrowRecordVO> findPage(BorrowQueryDTO dto) {
+
+        // 1. 参数兜底（和图书分页同一套防御）
+        if(dto == null){
+            dto = new BorrowQueryDTO();
+        }
+        if(dto.getPageNum() == null){
+            dto.setPageNum(1);
+        }
+        if(dto.getPageSize() == null){
+            dto.setPageSize(10);
+        }
+
+        // 2. 权限收敛：只有管理员能看所有人；
+        //    普通用户不管前端传没传 userId，一律强制改成自己（防越权查别人的记录）
+        if(!"ADMIN".equals(UserContext.getRole())){
+            dto.setUserId(UserContext.getUserId());
+        }
+
+        // 3. 页码换算成 SQL 的偏移量：第2页 = 跳过第1页的10条
+        int offset = (dto.getPageNum() - 1) * dto.getPageSize();
+
+        // 4. 两条 SQL：一条取当页数据（JOIN 出书名/用户名），一条数总数（分页器要显示"共 N 条"）
+        List<BorrowRecordVO> records =
+                borrowRecordMapper.findPage(dto, offset, dto.getPageSize());
+
+        Long total =
+                borrowRecordMapper.count(dto);
+
+        return new PageResult<>(records, total);
+    }
+
     @Log("归还图书")
     @Override
     @Transactional

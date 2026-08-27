@@ -105,4 +105,44 @@
         AND borrow_time &lt; DATE_SUB(NOW(), INTERVAL 30 DAY)
 
     </update>
+
+    <!-- 分页查询借阅记录：userId/status 都是可选条件 -->
+    <!-- JOIN 两张表把 bookId→书名、userId→用户名 一次性查出来 -->
+    <select id="findPage" resultType="com.coraline.library.vo.BorrowRecordVO">
+
+        SELECT
+        br.*,
+        b.name AS book_title,
+        u.username AS username
+        FROM borrow_record br
+        LEFT JOIN book b ON br.book_id = b.id
+        LEFT JOIN user u ON br.user_id = u.id
+        <where>
+            <if test="dto.userId != null">
+                AND br.user_id = #{dto.userId}
+            </if>
+            <if test="dto.status != null">
+                AND br.status = #{dto.status}
+            </if>
+        </where>
+        ORDER BY br.borrow_time DESC
+        LIMIT #{offset}, #{pageSize}
+
+    </select>
+
+    <!-- 分页总数：条件和 findPage 完全一致，只是不取数据只数数 -->
+    <select id="count" resultType="long">
+
+        SELECT COUNT(*)
+        FROM borrow_record
+        <where>
+            <if test="dto.userId != null">
+                AND user_id = #{dto.userId}
+            </if>
+            <if test="dto.status != null">
+                AND status = #{dto.status}
+            </if>
+        </where>
+
+    </select>
 </mapper>

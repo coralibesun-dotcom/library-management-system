@@ -1,7 +1,10 @@
 package com.coraline.library.service;
 
+import com.coraline.library.common.PageResult;
 import com.coraline.library.dto.BorrowDTO;
+import com.coraline.library.dto.BorrowQueryDTO;
 import com.coraline.library.entity.BorrowRecord;
+import com.coraline.library.vo.BorrowRecordVO;
 
 import java.util.List;
 
@@ -36,6 +39,13 @@ public interface BorrowRecordService {
      * 查询全部借阅记录（管理员）
      */
     List<BorrowRecord> findAll();
+
+
+    /**
+     * 分页查询借阅记录：管理员看全部，普通用户只看自己的
+     * 返回 VO（带书名/用户名），页面直接展示
+     */
+    PageResult<BorrowRecordVO> findPage(BorrowQueryDTO dto);
 
 
     /**

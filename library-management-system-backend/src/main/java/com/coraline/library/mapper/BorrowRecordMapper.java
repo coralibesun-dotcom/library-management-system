@@ -1,6 +1,8 @@
 package com.coraline.library.mapper;
 
+import com.coraline.library.dto.BorrowQueryDTO;
 import com.coraline.library.entity.BorrowRecord;
+import com.coraline.library.vo.BorrowRecordVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -41,4 +43,16 @@ public interface BorrowRecordMapper {
 
     // 把借阅中超过30天未还的记录批量标记为逾期，返回影响行数
     int markOverdue();
+
+
+    // 分页查询借阅记录（dto.userId 有值只查这个人的，没值查所有人）
+    // 返回 VO：JOIN 出书名和用户名，页面直接展示
+    List<BorrowRecordVO> findPage(
+            @Param("dto") BorrowQueryDTO dto,
+            @Param("offset") Integer offset,
+            @Param("pageSize") Integer pageSize
+    );
+
+    // 分页配套：按同样条件数总数
+    Long count(@Param("dto") BorrowQueryDTO dto);
 }
